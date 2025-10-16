@@ -4,6 +4,7 @@ import { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { store } from './store/store'
 import { Provider } from 'react-redux'
+import 'react-native-get-random-values';
 
 export default function RootLayout() {
   const navigation = useNavigation();
@@ -24,7 +25,7 @@ export default function RootLayout() {
         headerTitleAlign: 'center',
 
       }}>
-        <Stack.Screen name="screens/index" options={{
+        <Stack.Screen name="index" options={{
           title: "Home",
 
           // headerRight: () => (
@@ -34,7 +35,7 @@ export default function RootLayout() {
           // )
 
         }} />
-        <Stack.Screen name="screens/todoList" options={{
+        <Stack.Screen name="todoList" options={{
           title: 'Todo List'
         }} />
       </Stack>

@@ -1,19 +1,17 @@
 import React from 'react';
-import { Modal, ScrollView, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View, FlatList } from 'react-native'
+import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View, FlatList } from 'react-native'
 import AddUserButton from '../components/AddUserButton'
 import RectangleButton from '../components/RectangleButton'
 import { useSelector, useDispatch } from 'react-redux'
 import { addTodo } from '../app/todo/todoSlice';
 import { RootState, AppDispatch } from '../app/store/store';
-import TodoItem, { createTodo } from '../app/todo/todoItem';
+import TodoItem, { createTodo, TodoItemProps } from '../app/todo/todoItem';
 
 export default function TodoList() {
   const dispatch = useDispatch<AppDispatch>();
-  const texts = useSelector((state: RootState) => state.list.texts);
-  const showText = useSelector((state: RootState) => state.list.showText);
 
   // Array of tofo items from the redux store
-  const todoDataArray: TodoItem[] = useSelector((state: RootState) => state.todoItem.data);
+  const todoDataArray: TodoItemProps[] = useSelector((state: RootState) => state.todoItem.data);
   const [isVisible, setModalVisible] = React.useState(false);
   const [text, onChangeText] = React.useState('');
   const closeModal = (isConfirm: boolean, data: string) => {
@@ -21,7 +19,7 @@ export default function TodoList() {
     setModalVisible(false);
     if (isConfirm) {
       const todoData = createTodo(data);
-      console.log("Firing addTodo item to Store with metadata\n" + data);
+      console.log("Firing addTodo item to Store with metadata:\n" + data);
       dispatch(addTodo(todoData));
     }
 
@@ -30,62 +28,60 @@ export default function TodoList() {
   return (
     <View style={styles.container}>
       <Text>Todo List</Text>
-      <ScrollView contentContainerStyle={styles.container}>
-        {texts.map((text, idx) => (
-          <Text key={idx} style={styles.text}>{text}</Text>
-        ))}
-      </ScrollView>
+
       <FlatList
         data={todoDataArray}
-        renderItem={({ item }) => <Text>{item.msg}</Text>}
+        renderItem={({ item }) =>
+          <TodoItem
+            id={item.id}
+            isComplete={item.isComplete}
+            msg={item.msg} />
+        }
         keyExtractor={item => item.id}
       />
-      {showText && <Text style={styles.text}>Hello from Redux!</Text>}
       <AddUserButton
         onPress={() => setModalVisible(true)}
       />
       <View>
 
       </View>
-      <Modal
-        transparent
-        onDismiss={() => setModalVisible(false)}
-        visible={isVisible}
-        animationType='slide'
-        onRequestClose={() => setModalVisible(false)}>
-        <TouchableWithoutFeedback
-          onPressOut={() => setModalVisible(false)}>
-          <View style={styles.modalBackground}>
-            <TouchableWithoutFeedback>
-              <View style={styles.modalContainer}>
-                <Text style={styles.modalTitle}>Enter Data</Text>
-                <TextInput style={styles.input}
-                  placeholder='Add a task.'
-                  placeholderTextColor={'grey'}
-                  value={text}
-                  onChangeText={onChangeText}
-                ></TextInput>
-                <View
-                  style={styles.buttons}>
-                  <RectangleButton
-                    title='Cancel'
-                    backColor="grey"
-                    fontColor="white"
-                    onPress={() => closeModal(false, '')}>
+      <Pressable onPressOut={() => setModalVisible(false)}>
 
-                  </RectangleButton>
-                  <RectangleButton
-                    title='Add Task'
-                    backColor="green"
-                    fontColor="white"
-                    onPress={() => closeModal(true, text)}>
-                  </RectangleButton>
-                </View>
+        <Modal
+          transparent
+          onDismiss={() => setModalVisible(false)}
+          visible={isVisible}
+          animationType='slide'
+          onRequestClose={() => setModalVisible(false)}>
+          <Pressable style={styles.modalBackground} onPress={() => setModalVisible(false)}>
+            <Pressable style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>Enter Data</Text>
+              <TextInput style={styles.input}
+                placeholder='Add a task.'
+                placeholderTextColor={'grey'}
+                value={text}
+                onChangeText={onChangeText}
+              ></TextInput>
+              <View
+                style={styles.buttons}>
+                <RectangleButton
+                  title='Cancel'
+                  backColor="grey"
+                  fontColor="white"
+                  onPress={() => closeModal(false, '')}>
+
+                </RectangleButton>
+                <RectangleButton
+                  title='Add Task'
+                  backColor="green"
+                  fontColor="white"
+                  onPress={() => closeModal(true, text)}>
+                </RectangleButton>
               </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+            </Pressable>
+          </Pressable>
+        </Modal>
+      </Pressable>
     </View>
 
   )
@@ -112,7 +108,7 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0,50,0,0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },

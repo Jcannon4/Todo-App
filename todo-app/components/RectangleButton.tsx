@@ -1,16 +1,16 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Text } from "react-native"
+import { StyleSheet, Pressable, Text } from "react-native"
 
 const AddUserButton = ({ ...props }) => {
     return (
-        <TouchableOpacity
+        <Pressable
             onPress={props.onPress}
-            style={[styles.button, {backgroundColor: props.backColor}]}>
+            style={[styles.button, { backgroundColor: props.backColor }]}>
             <Text
                 style={{
                     color: props.fontColor,
                 }}>{props.title}</Text>
-        </TouchableOpacity >
+        </Pressable >
     )
 }
 
@@ -23,10 +23,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         elevation: 3, // For Android shadow
-        shadowColor: '#000', // For iOS shadow
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+
     },
     buttonText: {
         color: 'white',

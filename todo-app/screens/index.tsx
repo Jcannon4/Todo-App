@@ -4,7 +4,7 @@ import InputField from "../components/InputField";
 import consoleLog, { logWarn, logObject } from "../app/utils";
 import { View, Button } from "react-native";
 
-import Counter from "../app/counter/counter";
+
 
 export default function Index() {
   return (
@@ -15,7 +15,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Counter />
+
       <Button
         onPress={() => { consoleLog("Hello"); logWarn("Example warning"); logObject(true); }}
         title="Learn More"

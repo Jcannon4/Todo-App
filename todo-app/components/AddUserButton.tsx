@@ -6,10 +6,10 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 const AddUserButton = ({ ...props }) => {
     return (
         <TouchableOpacity
-           // onPress={() => consoleLog("presssssed")}
+            // onPress={() => consoleLog("presssssed")}
             {...props}
         >
-            <AntDesign name="plus-circle" size={24} color="black" />
+            <AntDesign name="plus-circle" size={96} color="black" />
         </TouchableOpacity>
     )
 }
