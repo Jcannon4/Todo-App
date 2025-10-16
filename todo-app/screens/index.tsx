@@ -1,6 +1,6 @@
-import AddUserButton from "../app/components/AddUserButton";
+import AddUserButton from "../components/AddUserButton";
 import { Link } from "expo-router";
-import InputField from "../app/components/InputField";
+import InputField from "../components/InputField";
 import consoleLog, { logWarn, logObject } from "../app/utils";
 import { View, Button } from "react-native";
 

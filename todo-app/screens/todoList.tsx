@@ -1,31 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal, ScrollView, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View, FlatList } from 'react-native'
-import AddUserButton from '../app/components/AddUserButton'
-import RectangleButton from '../app/components/RectangleButton'
+import AddUserButton from '../components/AddUserButton'
+import RectangleButton from '../components/RectangleButton'
 import { useSelector, useDispatch } from 'react-redux'
-import Counter from "../app/counter/counter";
-import { toggleText, addText } from '../app/list/listSlice'
-import { RootState, AppDispatch, store } from '../app/store/store';
-
+import { addTodo } from '../app/todo/todoSlice';
+import { RootState, AppDispatch } from '../app/store/store';
+import TodoItem, { createTodo } from '../app/todo/todoItem';
 
 export default function TodoList() {
   const dispatch = useDispatch<AppDispatch>();
   const texts = useSelector((state: RootState) => state.list.texts);
   const showText = useSelector((state: RootState) => state.list.showText);
 
+  // Array of tofo items from the redux store
+  const todoDataArray: TodoItem[] = useSelector((state: RootState) => state.todoItem.data);
   const [isVisible, setModalVisible] = React.useState(false);
   const [text, onChangeText] = React.useState('');
   const closeModal = (isConfirm: boolean, data: string) => {
     onChangeText('');
     setModalVisible(false);
-    isConfirm ? console.log(data) : null;
-    dispatch(toggleText());
-    dispatch(addText())
-  }
-  const [numberOfInputs, setNumberOfInputs] = useState([1]) // initial count is 1, so one input will be displayed
+    if (isConfirm) {
+      const todoData = createTodo(data);
+      console.log("Firing addTodo item to Store with metadata\n" + data);
+      dispatch(addTodo(todoData));
+    }
 
-  const addInput = () => {
-    setNumberOfInputs([...numberOfInputs, 1]);
   }
 
   return (
@@ -36,6 +35,11 @@ export default function TodoList() {
           <Text key={idx} style={styles.text}>{text}</Text>
         ))}
       </ScrollView>
+      <FlatList
+        data={todoDataArray}
+        renderItem={({ item }) => <Text>{item.msg}</Text>}
+        keyExtractor={item => item.id}
+      />
       {showText && <Text style={styles.text}>Hello from Redux!</Text>}
       <AddUserButton
         onPress={() => setModalVisible(true)}
