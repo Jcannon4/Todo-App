@@ -1,7 +1,10 @@
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { v6 as uuidv6 } from 'uuid';
-import logo from '../../assets/images/react-logo.png';
 import trash from '../../assets/images/delete.png';
+import circle from '../../assets/images/circle.png';
+import { deleteTodo, toggleComplete } from './todoSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store/store';
 
 export interface TodoItemProps {
     id: string,
@@ -18,14 +21,24 @@ export function createTodo(text: string): TodoItemProps {
     return todoData;
 }
 
-const TodoItem = ({ msg }: TodoItemProps) => {
+
+const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
+    const dispatch = useDispatch<AppDispatch>();
+    const toggleCompletion = (id: string) => {
+        console.log("Toggle Completion of item with id:\n" + id);
+        dispatch(toggleComplete(id));
+    };
+
+    const onDelete = (id: string) => {
+        dispatch(deleteTodo(id));
+    };
     return (
         <View style={styles.container}>
-            <Pressable style={styles.buttonContainer}>
-                <Image style={styles.button} source={logo}></Image>
+            <Pressable onPress={() => toggleCompletion(id)} style={styles.buttonContainer}>
+                <Image style={styles.button} source={circle}></Image>
             </Pressable>
             <Text style={styles.content}>{msg}</Text>
-            <Pressable style={styles.trashContainer}>
+            <Pressable onPress={() => onDelete(id)} style={styles.trashContainer}>
                 <Image style={styles.trash} source={trash} />
             </Pressable>
         </View>
@@ -37,7 +50,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#2B2146',
+        backgroundColor: '#1a1a1a',
         flexDirection: 'row',
         //width: '100%',
         borderRadius: 14,
@@ -56,9 +69,9 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         //alignContent: 'center',
         fontSize: 16,
-        color: 'grey',
+        color: '#E0E0E0',
         flex: 5,
-        maxWidth: '70%',
+        maxWidth: '80%',
         //flexWrap: 'wrap'
     },
     buttonContainer: {
@@ -82,7 +95,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         tintColor: '#FF5252',
         alignSelf: 'flex-end',
-        
+
     }
 
 })

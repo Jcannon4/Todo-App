@@ -9,7 +9,7 @@ const AddUserButton = ({ ...props }) => {
             // onPress={() => consoleLog("presssssed")}
             {...props}
         >
-            <AntDesign name="plus-circle" size={96} color="black" />
+            <AntDesign name="plus-circle" size={96} color="#82EEFD" />
         </TouchableOpacity>
     )
 }

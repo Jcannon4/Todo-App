@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: 'white'
+    backgroundColor: '#494D5F'
   },
   flatlist: {
     paddingTop: '8%',
