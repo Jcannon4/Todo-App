@@ -27,9 +27,8 @@ export default function TodoList() {
 
   return (
     <View style={styles.container}>
-      <Text>Todo List</Text>
-
       <FlatList
+        style={styles.flatlist}
         data={todoDataArray}
         renderItem={({ item }) =>
           <TodoItem
@@ -92,7 +91,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  }, button: {
+    backgroundColor: 'white'
+  },
+  flatlist: {
+    paddingTop: '8%',
+    width: '80%',
+    minWidth: 300
+  },
+  button: {
     backgroundColor: '#007AFF',
     paddingVertical: 12,
     paddingHorizontal: 25,
