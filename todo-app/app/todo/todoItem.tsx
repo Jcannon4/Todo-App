@@ -2,9 +2,11 @@ import { Animated, Easing, Image, Pressable, StyleSheet, Text, View } from 'reac
 import { v6 as uuidv6 } from 'uuid';
 import trash from '../../assets/images/delete.png';
 import circle from '../../assets/images/circle.png';
+import check from '../../assets/images/check.png';
 import { deleteTodo, toggleComplete } from './todoSlice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
+import { useRef, useState } from 'react';
 
 export interface TodoItemProps {
     id: string,
@@ -23,25 +25,113 @@ export function createTodo(text: string): TodoItemProps {
 
 
 const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
+    const spinAnim = useRef(new Animated.Value(1)).current;
+    const scaleAnim = useRef(new Animated.Value(1)).current;
+    const minimizeAnim = useRef(new Animated.Value(1)).current;
     const dispatch = useDispatch<AppDispatch>();
-    const toggleCompletion = (id: string) => {
-        console.log("Toggle Completion of item with id:\n" + id);
-        dispatch(toggleComplete(id));
+
+    const spin = spinAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ["0deg", "360deg"],
+    });
+
+    const opacityAnim = useRef(new Animated.Value(1)).current;
+    const [animation, setAnimation] = useState(false)
+
+    const checkmarkAnimation = () => {
+        // Animate spin + shrink
+        Animated.sequence([
+            Animated.parallel([
+                Animated.timing(spinAnim, {
+                    toValue: 1,
+                    duration: 200,
+                    easing: Easing.inOut(Easing.ease),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(scaleAnim, {
+                    toValue: 0,
+                    duration: 200,
+                    easing: Easing.out(Easing.ease),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(opacityAnim, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+            ]),
+
+            Animated.parallel([
+                Animated.timing(spinAnim, {
+                    toValue: -5,
+                    duration: 0,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(scaleAnim, {
+                    toValue: 1,
+                    duration: 300,
+                    easing: Easing.out(Easing.ease),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(opacityAnim, {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+            ]),
+        ]).start();
+
+        // Toggle state halfway through
+        setTimeout(() => setAnimation(!animation), 200);
     };
 
-    const onDelete = (id: string) => {
-        dispatch(deleteTodo(id));
+    const deleteAnimation = () => {
+        Animated.sequence([
+            Animated.parallel([Animated.timing(minimizeAnim, {
+                toValue: 0,
+                duration: 200,
+                easing: Easing.out(Easing.ease),
+                useNativeDriver: true,
+            }),])
+
+        ]).start()
+    }
+
+    const toggleCompletion = (id: string, isComplete: boolean) => {
+        console.log("Toggle Completion of item with id:\n" + id);
+        dispatch(toggleComplete({ id, isComplete }));
+        checkmarkAnimation();
     };
+
+    const onDelete = (id: string, isComplete: boolean) => {
+        deleteAnimation();
+        setTimeout(() => dispatch(deleteTodo({ id, isComplete })), 200);
+
+    };
+
     return (
-        <View style={styles.container}>
-            <Pressable onPress={() => toggleCompletion(id)} style={styles.buttonContainer}>
-                <Image style={styles.button} source={circle}></Image>
+        <Animated.View style={[styles.container, {
+            transform: [{ scale: minimizeAnim }],
+        }]}>
+            <Pressable onPress={() => toggleCompletion(id, isComplete)} style={styles.buttonContainer}>
+                <Animated.Image
+                    source={isComplete ? check : circle}
+                    style={[
+                        styles.button,
+                        {
+                            transform: [{ scale: scaleAnim }, { rotate: spin }],
+                            opacity: opacityAnim,
+                            tintColor: isComplete ? "#00E676" : "#7A7A7A",
+                        },
+                    ]}
+                    resizeMode="contain">
+                </Animated.Image>
             </Pressable>
             <Text style={styles.content}>{msg}</Text>
-            <Pressable onPress={() => onDelete(id)} style={styles.trashContainer}>
-                <Image style={styles.trash} source={trash} />
+            <Pressable onPress={() => onDelete(id, isComplete)} style={styles.trashContainer}>
+                <Animated.Image style={styles.trash} source={trash} />
             </Pressable>
-        </View>
+        </Animated.View >
     )
 };
 
@@ -82,6 +172,7 @@ const styles = StyleSheet.create({
         tintColor: '#00E676',
         height: 25,
         width: 25,
+        transform: [{ rotate: 'spin' }]
     },
     trashContainer: {
         flex: 2,
