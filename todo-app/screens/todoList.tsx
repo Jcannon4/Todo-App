@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, FlatList, Text } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import AddUserButton from "../components/AddUserButton";
 import TaskModal from "../components/TaskModal";
 import { useSelector } from "react-redux";
@@ -9,29 +9,30 @@ import TodoItem, { TodoItemProps } from "../app/todo/todoItem";
 export default function TodoList() {
   // Array of tofo items from the redux store
   const todoDataArray: TodoItemProps[] = useSelector(
-    (state: RootState) => state.todoItem.data,
+    (state: RootState) => state.todoItem.data
   );
 
   const [isVisible, setModalVisible] = React.useState(false);
 
   return (
     <View style={styles.container}>
-      <FlatList
-        style={styles.flatlist}
-        data={todoDataArray}
-        renderItem={({ item }) => (
-          <TodoItem id={item.id} isComplete={item.isComplete} msg={item.msg} />
-        )}
-        keyExtractor={(item) => item.id}
-      />
-
-      <View>
-        <Text style={styles.line}>Completed Line</Text>
-      </View>
+      <ScrollView
+        style={styles.scrollContainer}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+      >
+        {todoDataArray.map((item) => (
+          <TodoItem
+            key={item.id}
+            id={item.id}
+            msg={item.msg}
+            isComplete={item.isComplete}
+          />
+        ))}
+      </ScrollView>
 
       <AddUserButton onPress={() => setModalVisible(true)} />
-
-      <TaskModal isVisible={isVisible} onClose={setModalVisible} />
+      <TaskModal isVisible={isVisible} closeModal={setModalVisible} />
     </View>
   );
 }
@@ -43,12 +44,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#494D5F",
   },
-  flatlist: {
+  scrollContainer: {
+    flex: 3,
     paddingTop: "8%",
     width: "80%",
     minWidth: 300,
-  },
-  line: {
-    fontSize: 24,
   },
 });

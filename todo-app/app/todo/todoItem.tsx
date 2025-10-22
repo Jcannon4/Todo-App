@@ -1,11 +1,9 @@
 import {
   Animated,
   Easing,
-  Image,
   Pressable,
   StyleSheet,
   Text,
-  View,
 } from "react-native";
 import { v6 as uuidv6 } from "uuid";
 import trash from "../../assets/images/delete.png";

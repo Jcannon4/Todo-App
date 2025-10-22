@@ -10,55 +10,83 @@ import {
 import RectangleButton from "./RectangleButton";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store/store";
-import { createTodo } from "@/app/todo/todoItem";
+import { createTodo, TodoItemProps } from "@/app/todo/todoItem";
 import { addTodo } from "@/app/todo/todoSlice";
 
 const TaskModal = ({ ...props }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [text, onChangeText] = React.useState("");
-  const closeModal = (isConfirm: boolean, data: string) => {
-    onChangeText("");
-    props.onClose(false);
-    if (isConfirm) {
-      const todoData = createTodo(data);
-      console.log("Firing addTodo item to Store with metadata:\n" + data);
-      dispatch(addTodo(todoData));
-    }
+  const [inputs, setInputs] = React.useState<string[]>([""]);
+
+  // Handles submission logic when user presses 'confirm'
+  const onSubmit = (inputs: string[]) => {
+    // Reset input fields after submission
+    setInputs([""]);
+    props.closeModal(false);
+    const inputDataset: TodoItemProps[] = [];
+    // Convert each user input string into a TodoItem object
+    inputs.map((input) => {
+      const dataPoint = createTodo(input);
+      inputDataset.push(dataPoint);
+      console.log("Creating TodoPropItem object with data:\n" + input);
+    });
+    // Dispatch action to update global state (handled in reducer)
+    dispatch(addTodo(inputDataset));
+  };
+  // User has touched outside of modal, or pressed 'cancel' button
+  // Closing modal and setting our inputs state to default
+  const onClose = () => {
+    setInputs([""]);
+    props.closeModal(false);
+  };
+  // User has clicked the '+' button to add another inputField within the modal
+  // Provides the user with another Input Field
+  const handleAddInput = () => {
+    setInputs([...inputs, ""]);
+  };
+  // Updates the correct inputfield the user is typing into
+  const handleInputChange = (text: string, index: number) => {
+    const newInputs = [...inputs];
+    newInputs[index] = text;
+    setInputs(newInputs);
   };
   return (
-    <Pressable onPressOut={() => props.onClose(false)}>
+    <Pressable onPressOut={() => onClose()}>
       <Modal
         transparent
-        onDismiss={() => props.onClose(false)}
+        onDismiss={() => onClose()}
         visible={props.isVisible}
         animationType="slide"
-        onRequestClose={() => props.onClose(false)}
+        onRequestClose={() => onClose()}
       >
-        <Pressable
-          style={styles.modalBackground}
-          onPress={() => props.onClose(false)}
-        >
+        <Pressable style={styles.modalBackground} onPress={() => onClose()}>
           <Pressable style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Enter Data</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Add a task."
-              placeholderTextColor={"grey"}
-              value={text}
-              onChangeText={onChangeText}
-            ></TextInput>
+            {inputs.map((input, index) => (
+              <TextInput
+                key={index}
+                style={styles.input}
+                placeholder={`Input #${index + 1}`}
+                placeholderTextColor={"grey"}
+                value={input}
+                onChangeText={(text) => handleInputChange(text, index)}
+              ></TextInput>
+            ))}
+
+            <Pressable onPress={handleAddInput}>
+              <Text style={{ flex: 1 }}>++</Text>
+            </Pressable>
             <View style={styles.buttons}>
               <RectangleButton
                 title="Cancel"
                 backColor="grey"
                 fontColor="white"
-                onPress={() => closeModal(false, "")}
+                onPress={() => onClose()}
               ></RectangleButton>
               <RectangleButton
                 title="Add Task"
                 backColor="green"
                 fontColor="white"
-                onPress={() => closeModal(true, text)}
+                onPress={() => onSubmit(inputs)}
               ></RectangleButton>
             </View>
           </Pressable>
@@ -89,6 +117,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
+    flex: 14,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
