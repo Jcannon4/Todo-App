@@ -4,6 +4,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  View,
 } from "react-native";
 import { v6 as uuidv6 } from "uuid";
 import trash from "../../assets/images/delete.png";
@@ -140,7 +141,10 @@ const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
           resizeMode="contain"
         ></Animated.Image>
       </Pressable>
-      <Text style={styles.content}>{msg}</Text>
+      <View style={styles.contentContainer}>
+        <Text style={styles.content}>{msg}</Text>
+      </View>
+
       <Pressable
         onPress={() => onDelete(id, isComplete)}
         style={styles.trashContainer}
@@ -153,12 +157,10 @@ const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#1a1a1a",
     flexDirection: "row",
-    //width: '100%',
     borderRadius: 14,
     shadowRadius: 5,
     marginBottom: 20,
@@ -168,17 +170,17 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     elevation: 4,
-    flexWrap: "wrap",
   },
-  content: {
+  contentContainer: {
+    flex: 5,
     textAlign: "left",
     justifyContent: "flex-start",
-    //alignContent: 'center',
+    alignContent: "center",
+  },
+  content: {
     fontSize: 16,
     color: "#E0E0E0",
-    flex: 5,
-    maxWidth: "80%",
-    //flexWrap: 'wrap'
+    flexWrap: "wrap",
   },
   buttonContainer: {
     flex: 1,
@@ -191,7 +193,7 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "spin" }],
   },
   trashContainer: {
-    flex: 2,
+    flex: 1,
     minWidth: 20,
   },
   trash: {

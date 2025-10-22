@@ -31,8 +31,10 @@ const todoSlice = createSlice({
     addTodo: (state, action: PayloadAction<TodoItemProps[]>) => {
       const inputs = action.payload;
       inputs.map((todoItem) => {
-        const index = state.incomplete.push(todoItem);
-        state.data.splice(index - 1, 0, todoItem);
+        if (todoItem.msg.trim() !== "") {
+          const index = state.incomplete.push(todoItem);
+          state.data.splice(index - 1, 0, todoItem);
+        }
       });
 
       state.count = state.data.length;

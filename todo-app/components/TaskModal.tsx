@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store/store";
 import { createTodo, TodoItemProps } from "@/app/todo/todoItem";
 import { addTodo } from "@/app/todo/todoSlice";
+import InputField from "./InputField";
 
 const TaskModal = ({ ...props }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -62,19 +63,19 @@ const TaskModal = ({ ...props }) => {
           <Pressable style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Enter Data</Text>
             {inputs.map((input, index) => (
-              <TextInput
+              <InputField
                 key={index}
-                style={styles.input}
+                placeholderTextColor="#C0C0C0"
                 placeholder={`Input #${index + 1}`}
-                placeholderTextColor={"grey"}
                 value={input}
-                onChangeText={(text) => handleInputChange(text, index)}
-              ></TextInput>
+                mulitline={true}
+                onChangeText={(text: string) => handleInputChange(text, index)}
+              ></InputField>
             ))}
-
             <Pressable onPress={handleAddInput}>
-              <Text style={{ flex: 1 }}>++</Text>
+              <Text style={styles.addInput}>++</Text>
             </Pressable>
+
             <View style={styles.buttons}>
               <RectangleButton
                 title="Cancel"
@@ -117,14 +118,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
-    flex: 14,
+    flex: 1,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
     padding: 10,
-    fontSize: 16,
+    height: 10000,
+    fontSize: 36,
     marginBottom: 15,
     color: "#000",
+  },
+  addInputContainer: {},
+  addInput: {
+    fontSize: 12,
+    color: "black",
+    textAlign: "center",
   },
   buttons: {
     flexDirection: "row",
