@@ -1,18 +1,12 @@
 import React from "react";
-import {
-  Modal,
-  StyleSheet,
-  Pressable,
-  Text,
-  View,
-  TextInput,
-} from "react-native";
+import { Modal, StyleSheet, Pressable, Text, View } from "react-native";
 import RectangleButton from "./RectangleButton";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store/store";
 import { createTodo, TodoItemProps } from "@/app/todo/todoItem";
 import { addTodo } from "@/app/todo/todoSlice";
 import InputField from "./InputField";
+import AddButton from "./AddButton";
 
 const TaskModal = ({ ...props }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -72,9 +66,6 @@ const TaskModal = ({ ...props }) => {
                 onChangeText={(text: string) => handleInputChange(text, index)}
               ></InputField>
             ))}
-            <Pressable onPress={handleAddInput}>
-              <Text style={styles.addInput}>++</Text>
-            </Pressable>
 
             <View style={styles.buttons}>
               <RectangleButton
@@ -83,6 +74,12 @@ const TaskModal = ({ ...props }) => {
                 fontColor="white"
                 onPress={() => onClose()}
               ></RectangleButton>
+              <AddButton
+                onPress={handleAddInput}
+                style={styles.addButton}
+                buttonSize={18}
+              ></AddButton>
+
               <RectangleButton
                 title="Add Task"
                 backColor="green"
@@ -106,6 +103,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: "85%",
+    maxHeight: "100%",
     backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
@@ -137,6 +135,21 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+  },
+  addButton: {
+    //flex: 1,
+    backgroundColor: "#007bff",
+    borderRadius: 30,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 8, // Android shadow
+    shadowColor: "#000", // iOS shadow
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
 });
 

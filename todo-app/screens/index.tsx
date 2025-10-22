@@ -1,8 +1,9 @@
-import AddUserButton from "../components/AddUserButton";
+import AddUserButton from "../components/AddButton";
 import { Link } from "expo-router";
 import InputField from "../components/InputField";
 import consoleLog, { logWarn, logObject } from "../app/utils";
 import { View, Button } from "react-native";
+import QuickVerticalAnimation from "@/components/QuickVerticalAnimation";
 
 export default function Index() {
   return (
@@ -13,7 +14,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Button
+      {/* <Button
         onPress={() => {
           consoleLog("Hello");
           logWarn("Example warning");
@@ -25,7 +26,8 @@ export default function Index() {
       />
       <InputField placeholder="username" />
       <InputField placeholder="password" />
-      <AddUserButton />
+      <AddUserButton /> */}
+      {/* <QuickVerticalAnimation/> */}
       <Link href="/todoList">Todo List</Link>
     </View>
   );

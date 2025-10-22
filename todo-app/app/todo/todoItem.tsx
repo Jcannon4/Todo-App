@@ -120,7 +120,7 @@ const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
       style={[
         styles.container,
         {
-          transform: [{ scale: minimizeAnim }],
+           transform: [{ scale: minimizeAnim }],
         },
       ]}
     >
@@ -183,8 +183,8 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   buttonContainer: {
-    flex: 1,
-    minWidth: 30,
+    //flex: 1,
+    width: 50,
   },
   button: {
     tintColor: "#00E676",

@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Pressable, Text } from "react-native";
 
-const AddUserButton = ({ ...props }) => {
+const RectangleButton = ({ ...props }) => {
   return (
     <Pressable
       onPress={props.onPress}
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddUserButton;
+export default RectangleButton;
