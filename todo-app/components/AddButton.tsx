@@ -4,11 +4,9 @@ import { AntDesign } from "@expo/vector-icons";
 const AddButton = ({ ...props }) => {
   return (
     <Pressable {...props}>
-      <AntDesign name="plus" size={props.buttonSize} color='white'/>
-
+      <AntDesign name="plus" size={props.buttonSize} color="white" />
     </Pressable>
   );
 };
-
 
 export default AddButton;

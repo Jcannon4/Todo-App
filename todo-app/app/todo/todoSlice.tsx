@@ -38,7 +38,7 @@ const todoSlice = createSlice({
 
     toggleComplete: (
       state,
-      action: PayloadAction<{ id: string; isComplete: boolean }>
+      action: PayloadAction<{ id: string; isComplete: boolean }>,
     ) => {
       //When toggle is pressed, we know which array it will belong to
       // Check statement so we dont need to search two arrays
@@ -48,13 +48,13 @@ const todoSlice = createSlice({
         // Parse completed state and find item, O(n) operation
         // Grab the index of item so that we can splice our original array O(n)
         const startIndex: number = state.completed.findIndex(
-          (item) => item.id === curItem.id
+          (item) => item.id === curItem.id,
         );
         // splice() item from array (memory complexity increase, since copy array is formed)
         // Also catch the removed item in an array of type TodoItemProps
         const isolatedArray: TodoItemProps[] = state.completed.splice(
           startIndex,
-          1
+          1,
         ); // magic number 1 indicates we remove 1 item
         // toggle the isCompete status
         isolatedArray[0].isComplete = !isolatedArray[0].isComplete;
@@ -63,13 +63,13 @@ const todoSlice = createSlice({
       } else {
         // Item state came in as false, change to True
         const startIndex: number = state.incomplete.findIndex(
-          (item) => item.id === curItem.id
+          (item) => item.id === curItem.id,
         );
         // splice() item from array (memory complexity increase, since copy array is formed)
         // Also catch the removed item in an array of type TodoItemProps
         const isolatedArray: TodoItemProps[] = state.incomplete.splice(
           startIndex,
-          1
+          1,
         ); // magic number 1 indicates we remove 1 item
         // toggle the isCompete status
         isolatedArray[0].isComplete = !isolatedArray[0].isComplete;
@@ -80,23 +80,23 @@ const todoSlice = createSlice({
     },
     deleteTodo: (
       state,
-      action: PayloadAction<{ id: string; isComplete: boolean }>
+      action: PayloadAction<{ id: string; isComplete: boolean }>,
     ) => {
       console.log(
         " FIRING DELETE FROM REDUCER, deleting item with id: \n" +
           action.payload.id +
           " " +
-          action.payload.isComplete
+          action.payload.isComplete,
       );
       state.data = state.data.filter((item) => item.id !== action.payload.id);
 
       if (action.payload.isComplete) {
         state.completed = state.completed.filter(
-          (item) => item.id !== action.payload.id
+          (item) => item.id !== action.payload.id,
         );
       } else {
         state.incomplete = state.incomplete.filter(
-          (item) => item.id !== action.payload.id
+          (item) => item.id !== action.payload.id,
         );
       }
     },

@@ -16,7 +16,7 @@ import TodoItem, { createTodo, TodoItemProps } from "../app/todo/todoItem";
 export default function TodoList() {
   // Array of tofo items from the redux store
   const todoDataArray: TodoItemProps[] = useSelector(
-    (state: RootState) => state.todoItem.data
+    (state: RootState) => state.todoItem.data,
   );
   const [isVisible, setModalVisible] = React.useState(false);
 

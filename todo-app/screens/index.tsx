@@ -16,7 +16,7 @@ import ListItem, { createList, ListItemProps } from "@/app/list/listItem";
 
 export default function Index() {
   const listArray: ListItemProps[] = useSelector(
-    (state: RootState) => state.lists.data
+    (state: RootState) => state.lists.data,
   );
   const [isVisible, setVisibility] = React.useState<boolean>(false);
   return (
