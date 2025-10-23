@@ -1,48 +1,19 @@
 import React from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View } from "react-native";
 import AddButton from "../components/AddButton";
-import Animated, {
-  LinearTransition,
-  FadeInDown,
-  FadeOutUp,
-} from "react-native-reanimated";
 import TaskModal from "../components/TaskModal";
 import { addTodo } from "@/app/todo/todoSlice";
-import { useSelector } from "react-redux";
-
-import { RootState } from "../app/store/store";
-import TodoItem, { createTodo, TodoItemProps } from "../app/todo/todoItem";
+import { createTodo } from "../app/todo/todoItem";
+import TodoPageList from "@/components/TodoPageList";
 
 export default function TodoList() {
   // Array of tofo items from the redux store
-  const todoDataArray: TodoItemProps[] = useSelector(
-    (state: RootState) => state.todoItem.data,
-  );
+
   const [isVisible, setModalVisible] = React.useState(false);
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        style={styles.scrollContainer}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-      >
-        {todoDataArray.map((item) => (
-          <Animated.View
-            key={item.id}
-            layout={LinearTransition}
-            entering={FadeInDown.duration(200)}
-            exiting={FadeOutUp.duration(200)}
-          >
-            <TodoItem
-              key={item.id}
-              id={item.id}
-              msg={item.msg}
-              isComplete={item.isComplete}
-            />
-          </Animated.View>
-        ))}
-      </ScrollView>
+      <TodoPageList />
 
       <AddButton
         buttonSize={32}
@@ -69,12 +40,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#494D5F",
   },
-  scrollContainer: {
-    flex: 3,
-    paddingTop: "8%",
-    width: "80%",
-    minWidth: 300,
-  },
+
   floatingButton: {
     position: "absolute", // Makes the button float
     bottom: 20, // Position from the bottom

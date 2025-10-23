@@ -1,0 +1,9 @@
+rnce - builds react native component with export, for components
+imrc - imports React {compnent} from "react'
+imrn - imports {View, Text} from 'react-native'
+rns - creates styleSheet template
+redux - import {connect }
+ren - render(){return ()}
+rxreducer - redux reducer template
+rxselect - reduc selector template
+clg - console.log(object)

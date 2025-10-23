@@ -1,10 +1,11 @@
 import { Stack } from "expo-router";
 import { Pressable, Text } from "react-native";
-import { useLayoutEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { store } from "./store/store";
 import { Provider } from "react-redux";
 import "react-native-get-random-values";
+import HeaderRight from "@/components/HeaderRight";
 
 export default function RootLayout() {
   const navigation = useNavigation();
@@ -33,14 +34,10 @@ export default function RootLayout() {
           name="index"
           options={{
             title: "Home",
-
-            // headerRight: () => (
-            //   <Pressable onPress={() => alert("menu button has been pressed")}>
-            //     <Text style={{ color: '#fff', fontSize: 16, paddingRight: 10 }}>Menu</Text>
-            //   </Pressable>
-            // )
+            headerRight: () => <HeaderRight />,
           }}
         />
+
         <Stack.Screen
           name="todoList"
           options={{

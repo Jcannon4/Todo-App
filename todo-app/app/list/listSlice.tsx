@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ListItemProps } from "./listItem";
 import { feederData } from "./testdata";
-import { TodoItemProps } from "../todo/todoItem";
-import { TodoState } from "../todo/todoSlice";
 interface ListState {
   data: ListItemProps[];
   completedLists: ListItemProps[];

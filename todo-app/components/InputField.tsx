@@ -10,7 +10,6 @@ const InputField = ({ ...props }) => {
       clearButtonMode="while-editing"
       onChangeText={onChangeText}
       value={text}
-      //multiline={true}
       {...props}
     />
   );
@@ -18,7 +17,6 @@ const InputField = ({ ...props }) => {
 
 const styles = StyleSheet.create({
   input: {
-    // height: 80,
     margin: 12,
     fontSize: 32,
     borderWidth: 1,

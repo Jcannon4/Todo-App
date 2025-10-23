@@ -1,49 +1,37 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "expo-router";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View, Pressable } from "react-native";
 import AddButton from "../components/AddButton";
-import Animated, {
-  LinearTransition,
-  FadeInDown,
-  FadeOutUp,
-} from "react-native-reanimated";
 import TaskModal from "../components/TaskModal";
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store/store";
+import { RootState, AppDispatch } from "../app/store/store";
 import { addList } from "@/app/list/listSlice";
-import ListItem, { createList, ListItemProps } from "@/app/list/listItem";
-// import TodoItem, { TodoItemProps } from "../app/todo/todoItem";
+import { createList } from "@/app/list/listItem";
+import HomePageLists from "@/components/HomePageLists";
+import { menuOff } from "../app/menu/menuSlice";
 
 export default function Index() {
-  const listArray: ListItemProps[] = useSelector(
-    (state: RootState) => state.lists.data,
-  );
   const [isVisible, setVisibility] = React.useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const isMenuOpen: boolean = useSelector(
+    (state: RootState) => state.menu.isOpen
+  );
+  const closingMenu = () => {
+    console.log("Firing off press + " + isMenuOpen);
+    dispatch(menuOff(false));
+  };
   return (
     <View style={styles.container}>
-      <ScrollView
-        style={styles.scrollContainer}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-      >
-        {listArray.map((list) => (
-          <Animated.View
-            key={list.id}
-            layout={LinearTransition}
-            entering={FadeInDown.duration(200)}
-            exiting={FadeOutUp.duration(200)}
-          >
-            <ListItem
-              title={list.title}
-              todoItems={list.todoItems}
-              id={list.id}
-              isComplete={list.isComplete}
-              isArchived={list.isArchived}
-            ></ListItem>
-          </Animated.View>
-        ))}
-      </ScrollView>
+      <HomePageLists />
       <Link href="/todoList">Todo List</Link>
+
+      {isMenuOpen ? ( // Pressable renders when options menu renders,
+        // This is so the menu options closes before user clicks on other items
+        <Pressable
+          style={[StyleSheet.absoluteFill, { zIndex: 10 }]}
+          onPress={closingMenu}
+        />
+      ) : null}
 
       <AddButton
         buttonSize={32}
