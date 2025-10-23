@@ -13,8 +13,8 @@ import {
 import RectangleButton from "./RectangleButton";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store/store";
+
 import { createTodo, TodoItemProps } from "@/app/todo/todoItem";
-import { addTodo } from "@/app/todo/todoSlice";
 import InputField from "./InputField";
 import AddButton from "./AddButton";
 import Animated, {
@@ -34,12 +34,13 @@ const TaskModal = ({ ...props }) => {
     const inputDataset: TodoItemProps[] = [];
     // Convert each user input string into a TodoItem object
     inputs.map((input) => {
-      const dataPoint = createTodo(input);
+      const dataPoint = props.createPropObject(input);
       inputDataset.push(dataPoint);
       console.log("Creating TodoPropItem object with data:\n" + input);
     });
     // Dispatch action to update global state (handled in reducer)
-    dispatch(addTodo(inputDataset));
+    // dispatch(addTodo(inputDataset));
+    dispatch(props.onSubmit(inputDataset));
     setIsEdit(false);
   };
   // User has touched outside of modal, or pressed 'cancel' button
@@ -92,7 +93,7 @@ const TaskModal = ({ ...props }) => {
               style={styles.modalContainer}
             >
               <Pressable>
-                <Text style={styles.modalTitle}>Enter Data</Text>
+                <Text style={styles.modalTitle}>{props.title}</Text>
 
                 <ScrollView
                   indicatorStyle="black"
@@ -111,7 +112,7 @@ const TaskModal = ({ ...props }) => {
                       <InputField
                         key={index}
                         placeholderTextColor="#C0C0C0"
-                        placeholder={`Task #${index + 1}`}
+                        placeholder={`${props.placeholder} #${index + 1}`}
                         value={input}
                         onFocus={handleFocus}
                         mulitline={true}
@@ -136,7 +137,7 @@ const TaskModal = ({ ...props }) => {
                   ></AddButton>
 
                   <RectangleButton
-                    title="Add Task"
+                    title={props.confirmTitle}
                     backColor="green"
                     fontColor="white"
                     onPress={() => onSubmit(inputs)}
@@ -211,10 +212,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 8, // Android shadow
-    shadowColor: "#000", // iOS shadow
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+    boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.3)",
   },
 });
 

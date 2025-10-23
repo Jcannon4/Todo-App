@@ -120,7 +120,7 @@ const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
       style={[
         styles.container,
         {
-           transform: [{ scale: minimizeAnim }],
+          transform: [{ scale: minimizeAnim }],
         },
       ]}
     >
@@ -130,12 +130,12 @@ const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
       >
         <Animated.Image
           source={isComplete ? check : circle}
+          tintColor={isComplete ? "#00E676" : "#7A7A7A"}
           style={[
             styles.button,
             {
               transform: [{ scale: scaleAnim }, { rotate: spin }],
               opacity: opacityAnim,
-              tintColor: isComplete ? "#00E676" : "#7A7A7A",
             },
           ]}
           resizeMode="contain"
@@ -149,7 +149,11 @@ const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
         onPress={() => onDelete(id, isComplete)}
         style={styles.trashContainer}
       >
-        <Animated.Image style={styles.trash} source={trash} />
+        <Animated.Image
+          tintColor="#FF5252"
+          style={styles.trash}
+          source={trash}
+        />
       </Pressable>
     </Animated.View>
   );
@@ -162,14 +166,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#1a1a1a",
     flexDirection: "row",
     borderRadius: 14,
-    shadowRadius: 5,
     marginBottom: 20,
     paddingVertical: 14,
     paddingHorizontal: 18,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    elevation: 4,
+    boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.3)",
   },
   contentContainer: {
     flex: 5,
@@ -187,7 +187,6 @@ const styles = StyleSheet.create({
     width: 50,
   },
   button: {
-    tintColor: "#00E676",
     height: 25,
     width: 25,
     transform: [{ rotate: "spin" }],
@@ -202,7 +201,6 @@ const styles = StyleSheet.create({
     borderRadius: 50, // Example: make it circular
     borderColor: "transparent",
     borderWidth: 2,
-    tintColor: "#FF5252",
     alignSelf: "flex-end",
   },
 });

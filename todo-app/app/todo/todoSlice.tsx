@@ -1,28 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TodoItemProps } from "./todoItem";
 
-interface TodoState {
+export interface TodoState {
   data: TodoItemProps[];
   completed: TodoItemProps[];
   incomplete: TodoItemProps[];
   count: number;
 }
-const initialState: TodoState = {
-  data: [
-    { id: "a1", msg: "Item A", isComplete: false },
-    { id: "b2", msg: "Item B", isComplete: false },
-    { id: "c3", msg: "Item C", isComplete: false },
-    { id: "d4", msg: "Item D", isComplete: true },
-  ],
 
-  completed: [{ id: "d4", msg: "Item D", isComplete: true }],
-  incomplete: [
-    { id: "a1", msg: "Item A", isComplete: false },
-    { id: "b2", msg: "Item B", isComplete: false },
-    { id: "c3", msg: "Item C", isComplete: false },
-  ],
-  count: 0,
-};
+// Creates empty todostate to populate in the ListItemProps
+export function initializeTodoState(): TodoState {
+  const todoData: TodoState = {
+    data: [],
+    completed: [],
+    incomplete: [],
+    count: 0,
+  };
+  return todoData;
+}
+const initialState: TodoState = initializeTodoState();
 
 const todoSlice = createSlice({
   name: "todo",

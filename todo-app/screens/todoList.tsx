@@ -7,16 +7,17 @@ import Animated, {
   FadeOutUp,
 } from "react-native-reanimated";
 import TaskModal from "../components/TaskModal";
+import { addTodo } from "@/app/todo/todoSlice";
 import { useSelector } from "react-redux";
+
 import { RootState } from "../app/store/store";
-import TodoItem, { TodoItemProps } from "../app/todo/todoItem";
+import TodoItem, { createTodo, TodoItemProps } from "../app/todo/todoItem";
 
 export default function TodoList() {
   // Array of tofo items from the redux store
   const todoDataArray: TodoItemProps[] = useSelector(
     (state: RootState) => state.todoItem.data
   );
-
   const [isVisible, setModalVisible] = React.useState(false);
 
   return (
@@ -43,8 +44,20 @@ export default function TodoList() {
         ))}
       </ScrollView>
 
-      <AddButton buttonSize={32} style={styles.floatingButton} onPress={() => setModalVisible(true)} />
-      <TaskModal isVisible={isVisible} closeModal={setModalVisible} />
+      <AddButton
+        buttonSize={32}
+        style={styles.floatingButton}
+        onPress={() => setModalVisible(true)}
+      />
+      <TaskModal
+        title="Enter Data"
+        placeholder="Task"
+        confirmTitle="Confirm"
+        onSubmit={addTodo}
+        createPropObject={createTodo}
+        isVisible={isVisible}
+        closeModal={setModalVisible}
+      />
     </View>
   );
 }
@@ -73,9 +86,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 8, // Android shadow
-    shadowColor: "#000", // iOS shadow
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+    boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.3)",
   },
 });
