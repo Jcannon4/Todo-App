@@ -6,9 +6,11 @@ const InputField = ({ ...props }) => {
   return (
     <TextInput
       style={styles.input}
+      keyboardAppearance="dark"
+      clearButtonMode="while-editing"
       onChangeText={onChangeText}
       value={text}
-      // multiline={true}
+      //multiline={true}
       {...props}
     />
   );
@@ -16,12 +18,13 @@ const InputField = ({ ...props }) => {
 
 const styles = StyleSheet.create({
   input: {
-   // height: 80,
+    // height: 80,
     margin: 12,
     fontSize: 32,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
+    alignItems: "center",
     padding: 10,
   },
 });

@@ -1,5 +1,15 @@
 import React from "react";
-import { Modal, StyleSheet, Pressable, Text, View } from "react-native";
+import {
+  Modal,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  Text,
+  Keyboard,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import RectangleButton from "./RectangleButton";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store/store";
@@ -7,11 +17,15 @@ import { createTodo, TodoItemProps } from "@/app/todo/todoItem";
 import { addTodo } from "@/app/todo/todoSlice";
 import InputField from "./InputField";
 import AddButton from "./AddButton";
+import Animated, {
+  FadeInRight,
+  LinearTransition,
+} from "react-native-reanimated";
 
 const TaskModal = ({ ...props }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [inputs, setInputs] = React.useState<string[]>([""]);
-
+  const [isEdit, setIsEdit] = React.useState<boolean>(false);
   // Handles submission logic when user presses 'confirm'
   const onSubmit = (inputs: string[]) => {
     // Reset input fields after submission
@@ -26,12 +40,14 @@ const TaskModal = ({ ...props }) => {
     });
     // Dispatch action to update global state (handled in reducer)
     dispatch(addTodo(inputDataset));
+    setIsEdit(false);
   };
   // User has touched outside of modal, or pressed 'cancel' button
   // Closing modal and setting our inputs state to default
   const onClose = () => {
     setInputs([""]);
     props.closeModal(false);
+    setIsEdit(false);
   };
   // User has clicked the '+' button to add another inputField within the modal
   // Provides the user with another Input Field
@@ -44,53 +60,94 @@ const TaskModal = ({ ...props }) => {
     newInputs[index] = text;
     setInputs(newInputs);
   };
+  // Do not close the modal when the user is editing a text input and clicks in the negative space
+  const onbackgroundClose = () => {
+    if (isEdit) {
+      Keyboard.dismiss();
+      setIsEdit(false);
+    } else {
+      props.closeModal(false);
+    }
+  };
+  const handleFocus = () => {
+    setIsEdit(true);
+  };
+
   return (
-    <Pressable onPressOut={() => onClose()}>
+    <View>
       <Modal
         transparent
-        onDismiss={() => onClose()}
+        onDismiss={onClose}
         visible={props.isVisible}
         animationType="slide"
-        onRequestClose={() => onClose()}
+        onRequestClose={onClose}
       >
-        <Pressable style={styles.modalBackground} onPress={() => onClose()}>
-          <Pressable style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Enter Data</Text>
-            {inputs.map((input, index) => (
-              <InputField
-                key={index}
-                placeholderTextColor="#C0C0C0"
-                placeholder={`Input #${index + 1}`}
-                value={input}
-                mulitline={true}
-                onChangeText={(text: string) => handleInputChange(text, index)}
-              ></InputField>
-            ))}
+        <Pressable style={styles.modalBackground} onPress={onbackgroundClose}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            style={styles.keyboardContainer}
+          >
+            <Animated.View
+              layout={LinearTransition}
+              style={styles.modalContainer}
+            >
+              <Pressable>
+                <Text style={styles.modalTitle}>Enter Data</Text>
 
-            <View style={styles.buttons}>
-              <RectangleButton
-                title="Cancel"
-                backColor="grey"
-                fontColor="white"
-                onPress={() => onClose()}
-              ></RectangleButton>
-              <AddButton
-                onPress={handleAddInput}
-                style={styles.addButton}
-                buttonSize={18}
-              ></AddButton>
+                <ScrollView
+                  indicatorStyle="black"
+                  showsVerticalScrollIndicator={true}
+                  alwaysBounceVertical={true}
+                  keyboardShouldPersistTaps="handled"
+                  keyboardDismissMode="on-drag"
+                  style={styles.scrollContainer}
+                >
+                  {inputs.map((input, index) => (
+                    <Animated.View
+                      key={index}
+                      layout={LinearTransition}
+                      entering={FadeInRight.duration(500)}
+                    >
+                      <InputField
+                        key={index}
+                        placeholderTextColor="#C0C0C0"
+                        placeholder={`Task #${index + 1}`}
+                        value={input}
+                        onFocus={handleFocus}
+                        mulitline={true}
+                        onChangeText={(text: string) => {
+                          handleInputChange(text, index);
+                        }}
+                      ></InputField>
+                    </Animated.View>
+                  ))}
+                </ScrollView>
+                <Animated.View layout={LinearTransition} style={styles.buttons}>
+                  <RectangleButton
+                    title="Cancel"
+                    backColor="grey"
+                    fontColor="white"
+                    onPress={onClose}
+                  ></RectangleButton>
+                  <AddButton
+                    onPress={handleAddInput}
+                    style={styles.addButton}
+                    buttonSize={18}
+                  ></AddButton>
 
-              <RectangleButton
-                title="Add Task"
-                backColor="green"
-                fontColor="white"
-                onPress={() => onSubmit(inputs)}
-              ></RectangleButton>
-            </View>
-          </Pressable>
+                  <RectangleButton
+                    title="Add Task"
+                    backColor="green"
+                    fontColor="white"
+                    onPress={() => onSubmit(inputs)}
+                  ></RectangleButton>
+                </Animated.View>
+              </Pressable>
+            </Animated.View>
+          </KeyboardAvoidingView>
         </Pressable>
       </Modal>
-    </Pressable>
+    </View>
   );
 };
 
@@ -99,6 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(0,50,0,0.4)",
     justifyContent: "center",
+    //paddingTop: 100,
     alignItems: "center",
   },
   modalContainer: {
@@ -114,6 +172,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 10,
     textAlign: "center",
+  },
+  keyboardContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  scrollContainer: {
+    maxHeight: 300,
   },
   input: {
     flex: 1,

@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import { View } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 
 export default function Index() {
   return (
@@ -14,3 +14,5 @@ export default function Index() {
     </View>
   );
 }
+
+const style = StyleSheet.create({});
