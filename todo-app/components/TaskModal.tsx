@@ -14,15 +14,26 @@ import RectangleButton from "./RectangleButton";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store/store";
 
-import { createTodo, TodoItemProps } from "@/app/todo/todoItem";
 import InputField from "./InputField";
 import AddButton from "./AddButton";
 import Animated, {
   FadeInRight,
   LinearTransition,
 } from "react-native-reanimated";
+import { ListItemProps, TodoItemProps } from "@/app/list/listSlice";
 
-const TaskModal = ({ ...props }) => {
+interface TaskModalProps<T> {
+  createPropObject: (text: string) => T;
+  onSubmit: (payload: { lists?: T[]; listId?: string; todos?: T[] }) => any;
+  closeModal: (visible: boolean) => void;
+  isVisible: boolean;
+  isListMode: boolean; // true = List modal, false = Todo modal
+  placeholder: string;
+  title: string;
+  confirmTitle: string;
+}
+
+export default function TaskModal<T>(props: TaskModalProps<T>) {
   const dispatch = useDispatch<AppDispatch>();
   const [inputs, setInputs] = React.useState<string[]>([""]);
   const [isEdit, setIsEdit] = React.useState<boolean>(false);
@@ -31,16 +42,15 @@ const TaskModal = ({ ...props }) => {
     // Reset input fields after submission
     setInputs([""]);
     props.closeModal(false);
-    const inputDataset: TodoItemProps[] = [];
+    const createdObjects = inputs
+      .filter((i) => i.trim() !== "")
+      .map((input) => props.createPropObject(input));
     // Convert each user input string into a TodoItem object
-    inputs.map((input) => {
-      const dataPoint = props.createPropObject(input);
-      inputDataset.push(dataPoint);
-      console.log("Creating TodoPropItem object with data:\n" + input);
-    });
-    // Dispatch action to update global state (handled in reducer)
-    // dispatch(addTodo(inputDataset));
-    dispatch(props.onSubmit(inputDataset));
+    if (props.isListMode) {
+      dispatch(props.onSubmit({ lists: createdObjects }));
+    } else {
+      dispatch(props.onSubmit({ todos: createdObjects }));
+    }
     setIsEdit(false);
   };
   // User has touched outside of modal, or pressed 'cancel' button
@@ -73,7 +83,6 @@ const TaskModal = ({ ...props }) => {
   const handleFocus = () => {
     setIsEdit(true);
   };
-
   return (
     <View>
       <Modal
@@ -150,7 +159,7 @@ const TaskModal = ({ ...props }) => {
       </Modal>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   modalBackground: {
@@ -215,5 +224,3 @@ const styles = StyleSheet.create({
     boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.3)",
   },
 });
-
-export default TaskModal;

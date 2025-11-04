@@ -1,69 +1,120 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ListItemProps } from "./listItem";
-import { feederData } from "./testdata";
-interface ListState {
-  data: ListItemProps[];
-  completedLists: ListItemProps[];
-  incompleteLists: ListItemProps[];
-  count: number;
+import { sortTodoOrder, moveItem, insertBeforeFirstComplete } from "../utils";
+export interface TodoItemProps {
+  id: string;
+  msg: string;
+  isComplete: boolean;
+}
+export interface TodoState {
+  items: Record<string, TodoItemProps>; // O(1) access
+  order: string[]; // sorted by UI rules
+  incompleteCount: number;
+}
+export interface ListItemProps {
+  title: string;
+  id: string;
+  isArchived: boolean;
+  isComplete: boolean;
+  todo: TodoState;
+}
+export interface ListState {
+  lists: Record<string, ListItemProps>; // map for O(1) access
+  order: string[];
 }
 
 const initialState: ListState = {
-  data: [
-    {
-      id: "a5",
-      title: "List A",
-      isArchived: false,
-      todoItems: feederData,
-      isComplete: false,
-    },
-    {
-      id: "b5",
-      title: "Item B",
-      isArchived: false,
-      todoItems: feederData,
-      isComplete: true,
-    },
-  ],
-
-  completedLists: [
-    {
-      id: "b5",
-      title: "Item B",
-      isArchived: false,
-      todoItems: feederData,
-      isComplete: true,
-    },
-  ],
-  incompleteLists: [
-    {
-      id: "a5",
-      title: "List A",
-      isArchived: false,
-      todoItems: feederData,
-      isComplete: false,
-    },
-  ],
-  count: 0,
+  lists: {},
+  order: [],
 };
 
 const listSlice = createSlice({
   name: "list",
   initialState,
   reducers: {
-    addList: (state, action: PayloadAction<ListItemProps[]>) => {
-      const inputs = action.payload;
-      console.log(" LIST OUTPUT : \n" + inputs);
-      inputs.map((list) => {
-        if (list.title.trim() !== "") {
-          const index = state.incompleteLists.push(list);
-          state.data.splice(index - 1, 0, list);
+    createListState: (
+      state,
+      action: PayloadAction<{ lists: ListItemProps[] }>
+    ) => {
+      const inputs = action.payload.lists;
+
+      inputs.forEach((newList) => {
+        if (newList.title.trim() === "" || state.lists[newList.id]) return;
+
+        state.lists[newList.id] = newList;
+        state.order = insertBeforeFirstComplete(
+          state.lists,
+          state.order,
+          newList.id,
+          newList
+        );
+      });
+    },
+    toggleListComplete: (state, action: PayloadAction<{ listId: string }>) => {
+      const { listId } = action.payload;
+      const list = state.lists[listId];
+      if (!list) return;
+
+      list.isComplete = !list.isComplete;
+      state.order = moveItem(state.lists, state.order, listId);
+    },
+
+    deleteList: (state, action: PayloadAction<{ listID: string }>) => {
+      const { listID } = action.payload;
+      if (!state.lists[listID]) return;
+      delete state.lists[listID];
+      state.order = state.order.filter((id) => id !== listID);
+    },
+    editListName: () => {},
+    arhiveList: () => {}, // TODO
+    addTodos: (
+      state,
+      action: PayloadAction<{ listId: string; todos: TodoItemProps[] }>
+    ) => {
+      const { listId, todos } = action.payload;
+      const list = state.lists[listId];
+      if (!list) return;
+
+      todos.forEach((todo) => {
+        if (!list.todo.items[todo.id]) {
+          list.todo.items[todo.id] = todo;
+          list.todo.order.unshift(todo.id); // add to top (or bottom, depending)
+          if (!todo.isComplete) list.todo.incompleteCount++;
         }
       });
 
-      state.count = state.data.length;
+      // Apply sorting rule after adding
+      list.todo.order = sortTodoOrder(list.todo.items, list.todo.order);
     },
+
+    toggleTodo: (
+      state,
+      action: PayloadAction<{ listId: string; todoId: string }>
+    ) => {
+      const { listId, todoId } = action.payload;
+      const list = state.lists[listId];
+      const todo = list?.todo.items[todoId];
+      if (!todo) return;
+
+      todo.isComplete = !todo.isComplete;
+
+      // Update counts
+      list.todo.incompleteCount = Object.values(list.todo.items).filter(
+        (t) => !t.isComplete
+      ).length;
+
+      // Resort
+      list.todo.order = sortTodoOrder(list.todo.items, list.todo.order);
+    },
+    deleteTodo: () => {},
   },
 });
-export const { addList } = listSlice.actions;
+export const {
+  createListState,
+  deleteList,
+  editListName,
+  arhiveList,
+  addTodos,
+  deleteTodo,
+  toggleTodo,
+} = listSlice.actions;
 export default listSlice.reducer;

@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet } from "react-native";
 import React from "react";
-import ListItem, { ListItemProps } from "@/app/list/listItem";
+import { ListItemProps } from "@/app/list/listSlice";
+import ListItem from "@/app/list/listItem";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store/store";
 import Animated, {
@@ -10,8 +11,8 @@ import Animated, {
 } from "react-native-reanimated";
 
 const HomePageLists = () => {
-  const listArray: ListItemProps[] = useSelector(
-    (state: RootState) => state.lists.data,
+  const listRecord: Record<string, ListItemProps> = useSelector(
+    (state: RootState) => state.data.lists
   );
 
   return (
@@ -20,7 +21,7 @@ const HomePageLists = () => {
       scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}
     >
-      {listArray.map((list) => (
+      {Object.values(listRecord).map((list) => (
         <Animated.View
           key={list.id}
           layout={LinearTransition}
@@ -29,7 +30,7 @@ const HomePageLists = () => {
         >
           <ListItem
             title={list.title}
-            todoItems={list.todoItems}
+            todo={list.todo}
             id={list.id}
             isComplete={list.isComplete}
             isArchived={list.isArchived}

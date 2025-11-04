@@ -8,11 +8,19 @@ import Animated, {
 import TodoItem from "@/app/todo/todoItem";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store/store";
-import { TodoItemProps } from "@/app/todo/todoItem";
+import { TodoItemProps, selectTodoItemsByListId } from "@/app/todo/todoItem";
+import { useLocalSearchParams } from "expo-router";
+import { TodoState } from "@/app/todo/todoSlice";
 const TodoPageList = () => {
-  const todoDataArray: TodoItemProps[] = useSelector(
-    (state: RootState) => state.todoItem.data
-  );
+  const params = useLocalSearchParams();
+  const { id: listID } = params as { id: string };
+  console.log(" LIST ID : " + listID);
+  // Animations not updating since we are not directly tapped into the redux state here
+  // const list = useSelector((state: RootState) =>
+  //   state.lists.data.find((item) => item.id === listID)
+  // );
+  // const todoDataArray = list?.todoItems.data ?? [];
+  const todoDataArray: number[] = [];
   return (
     <ScrollView
       style={styles.scrollContainer}

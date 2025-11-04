@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Pressable, Text } from "react-native";
 import React, { useLayoutEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -8,6 +8,7 @@ import "react-native-get-random-values";
 import HeaderRight from "@/components/HeaderRight";
 
 export default function RootLayout() {
+  const title = useLocalSearchParams();
   const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -40,9 +41,10 @@ export default function RootLayout() {
 
         <Stack.Screen
           name="todoList"
-          options={{
-            title: "Todo List",
-          }}
+          options={({ route }) => ({
+            title: (route.params as { title: string })?.title || "Todo List",
+            // ... other options
+          })}
         />
       </Stack>
     </Provider>

@@ -2,9 +2,10 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import AddButton from "../components/AddButton";
 import TaskModal from "../components/TaskModal";
-import { addTodo } from "@/app/todo/todoSlice";
-import { createTodo } from "../app/todo/todoItem";
+
 import TodoPageList from "@/components/TodoPageList";
+import { addTodos } from "@/app/list/listSlice";
+import { createTodoItemProps } from "@/app/todo/todoItem";
 
 export default function TodoList() {
   // Array of tofo items from the redux store
@@ -24,10 +25,11 @@ export default function TodoList() {
         title="Enter Data"
         placeholder="Task"
         confirmTitle="Confirm"
-        onSubmit={addTodo}
-        createPropObject={createTodo}
+        onSubmit={addTodos}
+        createPropObject={createTodoItemProps}
         isVisible={isVisible}
         closeModal={setModalVisible}
+        isListMode={false}
       />
     </View>
   );

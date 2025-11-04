@@ -11,8 +11,9 @@ import trash from "../../assets/images/delete.png";
 import circle from "../../assets/images/circle.png";
 import check from "../../assets/images/check.png";
 import { deleteTodo, toggleComplete } from "./todoSlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store/store";
+import { createSelector } from "@reduxjs/toolkit";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
 import { useRef, useState } from "react";
 
 export interface TodoItemProps {
@@ -21,7 +22,7 @@ export interface TodoItemProps {
   isComplete: boolean;
 }
 
-export function createTodo(text: string): TodoItemProps {
+export function createTodoItemProps(text: string): TodoItemProps {
   const todoData: TodoItemProps = {
     id: uuidv6(),
     msg: text,

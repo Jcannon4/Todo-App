@@ -1,50 +1,56 @@
 import { v6 as uuidv6 } from "uuid";
-import { StyleSheet, Pressable, Text } from "react-native";
-import Animated from "react-native-reanimated";
-import { initializeTodoState, TodoState } from "../todo/todoSlice";
+import { StyleSheet, Pressable, Text, View } from "react-native";
+import { Link } from "expo-router";
+import {} from "../todo/todoSlice";
 import { AntDesign } from "@expo/vector-icons";
-export interface ListItemProps {
-  title: string;
-  id: string;
-  isArchived: boolean;
-  isComplete: boolean;
-  todoItems: TodoState;
-}
+
+import { ListItemProps } from "./listSlice";
 // Creates List objects for us to store into the state
 // returns to the task modal before being shipped to the reducer
-export function createList(text: string): ListItemProps {
+export function createListItemProps(text: string): ListItemProps {
   const listData: ListItemProps = {
     id: uuidv6(),
     title: text,
     isComplete: false,
     isArchived: false,
-    todoItems: initializeTodoState(),
+    // MIGHT HAVE TO REDO THIS I think items: {} is wrong
+    todo: { items: {}, order: [], incompleteCount: 0 }, //  what does a TodoState look like?
   };
   return listData;
 }
-const changePage = (id: string, title: string) => {
-  //Turn Off Menu
-  console.log("chagne the webpage to \n" + title + ` with ID: ${id}`);
-};
 
-const ListItem = ({ title, id, isComplete, todoItems }: ListItemProps) => {
+const ListItem = ({
+  title,
+  id,
+  isComplete,
+  todo,
+  isArchived,
+}: ListItemProps) => {
   return (
-    <Pressable onPress={() => changePage(id, title)}>
-      <Animated.View style={styles.container}>
-        {/* <Animated.Image
+    <Link
+      href={{
+        pathname: "/todoList",
+        params: { id: id, title: title },
+      }}
+      asChild
+    >
+      <Pressable>
+        <View style={styles.container}>
+          {/* <Animated.Image
           tintColor="#00E676"
           style={styles.checkmark}
           source={checkmark}
         ></Animated.Image> */}
-        <Text style={styles.content}>{title}</Text>
-        <AntDesign
-          color="white"
-          style={styles.options}
-          name="right"
-          size={28}
-        ></AntDesign>
-      </Animated.View>
-    </Pressable>
+          <Text style={styles.content}>{title}</Text>
+          <AntDesign
+            color="white"
+            style={styles.options}
+            name="right"
+            size={28}
+          ></AntDesign>
+        </View>
+      </Pressable>
+    </Link>
   );
 };
 

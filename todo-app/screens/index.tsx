@@ -1,14 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "expo-router";
 import { StyleSheet, View, Pressable } from "react-native";
 import AddButton from "../components/AddButton";
 import TaskModal from "../components/TaskModal";
 import { RootState, AppDispatch } from "../app/store/store";
-import { addList } from "@/app/list/listSlice";
-import { createList } from "@/app/list/listItem";
+import { createListState } from "@/app/list/listSlice";
 import HomePageLists from "@/components/HomePageLists";
 import { menuOff } from "../app/menu/menuSlice";
+import { createListItemProps } from "@/app/list/listItem";
 
 export default function Index() {
   const [isVisible, setVisibility] = React.useState<boolean>(false);
@@ -23,7 +22,6 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <HomePageLists />
-      <Link href="/todoList">Todo List</Link>
 
       {isMenuOpen ? ( // Pressable renders when options menu renders,
         // This is so the menu options closes before user clicks on other items
@@ -42,10 +40,11 @@ export default function Index() {
         title="Create new list"
         placeholder="New List"
         confirmTitle="Create"
-        onSubmit={addList}
-        createPropObject={createList}
+        onSubmit={createListState}
+        createPropObject={createListItemProps}
         isVisible={isVisible}
         closeModal={setVisibility}
+        isListMode={true}
       />
     </View>
   );
