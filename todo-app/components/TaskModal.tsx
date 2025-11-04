@@ -21,10 +21,15 @@ import Animated, {
   LinearTransition,
 } from 'react-native-reanimated';
 import { ListItemProps, TodoItemProps } from '@/app/list/listSlice';
+import { UnknownAction } from '@reduxjs/toolkit';
 
 interface TaskModalProps<T> {
   createPropObject: (text: string) => T;
-  onSubmit: (payload: { lists?: T[]; listId?: string; todos?: T[] }) => any;
+  onSubmit: (payload: {
+    lists?: T[];
+    listId?: string;
+    todos?: T[];
+  }) => UnknownAction;
   closeModal: (visible: boolean) => void;
   isVisible: boolean;
   isListMode: boolean; // true = List modal, false = Todo modal

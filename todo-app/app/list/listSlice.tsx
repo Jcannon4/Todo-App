@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { sortTodoOrder, moveItem, insertBeforeFirstComplete } from '../utils';
 export interface TodoItemProps {
-  id: string;
+  todoId: string;
   msg: string;
   isComplete: boolean;
 }
@@ -79,9 +79,9 @@ const listSlice = createSlice({
       console.log(' Found the list\n');
 
       todos.forEach((todo) => {
-        if (!list.todo.items[todo.id]) {
-          list.todo.items[todo.id] = todo;
-          list.todo.order.unshift(todo.id); // add to top (or bottom, depending)
+        if (!list.todo.items[todo.todoId]) {
+          list.todo.items[todo.todoId] = todo;
+          list.todo.order.unshift(todo.todoId); // add to top (or bottom, depending)
           if (!todo.isComplete) list.todo.incompleteCount++;
         }
       });
@@ -111,8 +111,33 @@ const listSlice = createSlice({
     },
     deleteTodo: (
       state,
-      action: PayloadAction<{ listID: string; todoID: string }>
-    ) => {},
+      action: PayloadAction<{ listId: string; todoId: string }>
+    ) => {
+      const { listId, todoId } = action.payload;
+
+      // 1. Locate the parent list and the todo item
+      const list = state.lists[listId];
+      const todoItem = list?.todo.items[todoId];
+
+      // Safety check: ensure both the list and the todo item exist
+      if (!list || !todoItem) {
+        // Optionally log an error if the item wasn't found
+        console.warn(`Could not find todoId: ${todoId} in listId: ${listId}.`);
+        return state;
+      }
+
+      // 2. Update incomplete count *before* deleting the item
+      // If the item was not complete, we must decrement the count
+      if (!todoItem.isComplete) {
+        list.todo.incompleteCount -= 1;
+      }
+
+      // 3. Delete the todo item from the items map (O(1) access)
+      delete list.todo.items[todoId];
+
+      // 4. Remove the todoId from the order array
+      list.todo.order = list.todo.order.filter((id) => id !== todoId);
+    },
   },
 });
 export const {

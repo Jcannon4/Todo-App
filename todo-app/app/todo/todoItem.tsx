@@ -5,33 +5,34 @@ import {
   StyleSheet,
   Text,
   View,
-} from "react-native";
-import { v6 as uuidv6 } from "uuid";
-import trash from "../../assets/images/delete.png";
-import circle from "../../assets/images/circle.png";
-import check from "../../assets/images/check.png";
-import { deleteTodo, toggleComplete } from "./todoSlice";
-import { createSelector } from "@reduxjs/toolkit";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store/store";
-import { useRef, useState } from "react";
-
-export interface TodoItemProps {
-  id: string;
-  msg: string;
-  isComplete: boolean;
-}
+} from 'react-native';
+import { v6 as uuidv6 } from 'uuid';
+import trash from '../../assets/images/delete.png';
+import circle from '../../assets/images/circle.png';
+import check from '../../assets/images/check.png';
+import { deleteTodo, toggleTodo } from '../list/listSlice';
+import { createSelector } from '@reduxjs/toolkit';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
+import { useRef, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import { TodoItemProps } from '../list/listSlice';
 
 export function createTodoItemProps(text: string): TodoItemProps {
   const todoData: TodoItemProps = {
-    id: uuidv6(),
+    todoId: uuidv6(),
     msg: text,
     isComplete: false,
   };
   return todoData;
 }
 
-const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
+const TodoItem = ({ msg, todoId, isComplete }: TodoItemProps) => {
+  const { id, title } = useLocalSearchParams<{ id: string; title: string }>();
+
+  // use id to select list from redux
+  const listID = useSelector((state: RootState) => state.data.lists[id].id);
+
   const spinAnim = useRef(new Animated.Value(1)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const minimizeAnim = useRef(new Animated.Value(1)).current;
@@ -39,7 +40,7 @@ const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
 
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"],
+    outputRange: ['0deg', '360deg'],
   });
 
   const opacityAnim = useRef(new Animated.Value(1)).current;
@@ -105,15 +106,18 @@ const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
     ]).start();
   };
 
-  const toggleCompletion = (id: string, isComplete: boolean) => {
-    console.log("Toggle Completion of item with id:\n" + id);
-    dispatch(toggleComplete({ id, isComplete }));
+  const toggleCompletion = (currentTodoId: string) => {
+    console.log('Toggle Completion of item with id:\n' + id);
+    dispatch(toggleTodo({ listId: listID, todoId: currentTodoId }));
     checkmarkAnimation();
   };
 
-  const onDelete = (id: string, isComplete: boolean) => {
+  const onDelete = (currentTodoId: string) => {
     deleteAnimation();
-    setTimeout(() => dispatch(deleteTodo({ id, isComplete })), 200);
+    setTimeout(
+      () => dispatch(deleteTodo({ listId: listID, todoId: currentTodoId })),
+      200
+    );
   };
 
   return (
@@ -126,12 +130,12 @@ const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
       ]}
     >
       <Pressable
-        onPress={() => toggleCompletion(id, isComplete)}
+        onPress={() => toggleCompletion(todoId)}
         style={styles.buttonContainer}
       >
         <Animated.Image
           source={isComplete ? check : circle}
-          tintColor={isComplete ? "#00E676" : "#7A7A7A"}
+          tintColor={isComplete ? '#00E676' : '#7A7A7A'}
           style={[
             styles.button,
             {
@@ -139,19 +143,16 @@ const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
               opacity: opacityAnim,
             },
           ]}
-          resizeMode="contain"
+          resizeMode='contain'
         ></Animated.Image>
       </Pressable>
       <View style={styles.contentContainer}>
         <Text style={styles.content}>{msg}</Text>
       </View>
 
-      <Pressable
-        onPress={() => onDelete(id, isComplete)}
-        style={styles.trashContainer}
-      >
+      <Pressable onPress={() => onDelete(todoId)} style={styles.trashContainer}>
         <Animated.Image
-          tintColor="#FF5252"
+          tintColor='#FF5252'
           style={styles.trash}
           source={trash}
         />
@@ -162,26 +163,26 @@ const TodoItem = ({ msg, id, isComplete }: TodoItemProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#1a1a1a",
-    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#1a1a1a',
+    flexDirection: 'row',
     borderRadius: 14,
     marginBottom: 20,
     paddingVertical: 14,
     paddingHorizontal: 18,
-    boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.3)",
+    boxShadow: '0px 4px 5px rgba(0, 0, 0, 0.3)',
   },
   contentContainer: {
     flex: 5,
-    textAlign: "left",
-    justifyContent: "flex-start",
-    alignContent: "center",
+    textAlign: 'left',
+    justifyContent: 'flex-start',
+    alignContent: 'center',
   },
   content: {
     fontSize: 16,
-    color: "#E0E0E0",
-    flexWrap: "wrap",
+    color: '#E0E0E0',
+    flexWrap: 'wrap',
   },
   buttonContainer: {
     //flex: 1,
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
   button: {
     height: 25,
     width: 25,
-    transform: [{ rotate: "spin" }],
+    transform: [{ rotate: 'spin' }],
   },
   trashContainer: {
     flex: 1,
@@ -200,9 +201,9 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 50, // Example: make it circular
-    borderColor: "transparent",
+    borderColor: 'transparent',
     borderWidth: 2,
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
   },
 });
 

@@ -1,4 +1,4 @@
-import { TodoItemProps } from "./todo/todoItem";
+import { TodoItemProps } from './list/listSlice';
 
 export default function consoleLog(a: string) {
   console.log(a);

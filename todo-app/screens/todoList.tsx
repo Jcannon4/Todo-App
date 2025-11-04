@@ -4,7 +4,7 @@ import AddButton from '../components/AddButton';
 import TaskModal from '../components/TaskModal';
 
 import TodoPageList from '@/components/TodoPageList';
-import { addTodos } from '@/app/list/listSlice';
+import { addTodos, deleteTodo, toggleTodo } from '@/app/list/listSlice';
 import { createTodoItemProps } from '@/app/todo/todoItem';
 
 import { useLocalSearchParams } from 'expo-router';
@@ -20,14 +20,14 @@ export default function TodoList() {
 
   // use id to select list from redux
   const listID = useSelector((state: RootState) => state.data.lists[id].id);
-  const todoData = useSelector(
-    (state: RootState) => state.data.lists[id].todo.items
+  const todoOrder = useSelector(
+    (state: RootState) => state.data.lists[id].todo.order
   );
   console.log('ANNOUNCING listID at the todo list page: ' + listID);
 
   return (
     <View style={styles.container}>
-      <TodoPageList listID={listID} todoInputs={todoData} />
+      <TodoPageList listID={listID} todoInputsOrder={todoOrder} />
 
       <AddButton
         buttonSize={32}
