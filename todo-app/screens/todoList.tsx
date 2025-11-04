@@ -1,20 +1,33 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import AddButton from "../components/AddButton";
-import TaskModal from "../components/TaskModal";
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import AddButton from '../components/AddButton';
+import TaskModal from '../components/TaskModal';
 
-import TodoPageList from "@/components/TodoPageList";
-import { addTodos } from "@/app/list/listSlice";
-import { createTodoItemProps } from "@/app/todo/todoItem";
+import TodoPageList from '@/components/TodoPageList';
+import { addTodos } from '@/app/list/listSlice';
+import { createTodoItemProps } from '@/app/todo/todoItem';
+
+import { useLocalSearchParams } from 'expo-router';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/app/store/store';
 
 export default function TodoList() {
   // Array of tofo items from the redux store
 
   const [isVisible, setModalVisible] = React.useState(false);
 
+  const { id, title } = useLocalSearchParams<{ id: string; title: string }>();
+
+  // use id to select list from redux
+  const listID = useSelector((state: RootState) => state.data.lists[id].id);
+  const todoData = useSelector(
+    (state: RootState) => state.data.lists[id].todo.items
+  );
+  console.log('ANNOUNCING listID at the todo list page: ' + listID);
+
   return (
     <View style={styles.container}>
-      <TodoPageList />
+      <TodoPageList listID={listID} todoInputs={todoData} />
 
       <AddButton
         buttonSize={32}
@@ -22,14 +35,15 @@ export default function TodoList() {
         onPress={() => setModalVisible(true)}
       />
       <TaskModal
-        title="Enter Data"
-        placeholder="Task"
-        confirmTitle="Confirm"
-        onSubmit={addTodos}
+        title='Enter Data'
+        placeholder='Task'
+        confirmTitle='Confirm'
         createPropObject={createTodoItemProps}
+        onSubmit={addTodos}
         isVisible={isVisible}
         closeModal={setModalVisible}
         isListMode={false}
+        listID={listID}
       />
     </View>
   );
@@ -38,22 +52,22 @@ export default function TodoList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#494D5F",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#494D5F',
   },
 
   floatingButton: {
-    position: "absolute", // Makes the button float
+    position: 'absolute', // Makes the button float
     bottom: 20, // Position from the bottom
     right: 20, // Position from the right
-    backgroundColor: "#007bff",
+    backgroundColor: '#007bff',
     borderRadius: 30,
     width: 60,
     height: 60,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     elevation: 8, // Android shadow
-    boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.3)",
+    boxShadow: '0px 4px 5px rgba(0, 0, 0, 0.3)',
   },
 });

@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { sortTodoOrder, moveItem, insertBeforeFirstComplete } from "../utils";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { sortTodoOrder, moveItem, insertBeforeFirstComplete } from '../utils';
 export interface TodoItemProps {
   id: string;
   msg: string;
@@ -28,7 +28,7 @@ const initialState: ListState = {
 };
 
 const listSlice = createSlice({
-  name: "list",
+  name: 'list',
   initialState,
   reducers: {
     createListState: (
@@ -38,7 +38,7 @@ const listSlice = createSlice({
       const inputs = action.payload.lists;
 
       inputs.forEach((newList) => {
-        if (newList.title.trim() === "" || state.lists[newList.id]) return;
+        if (newList.title.trim() === '' || state.lists[newList.id]) return;
 
         state.lists[newList.id] = newList;
         state.order = insertBeforeFirstComplete(
@@ -71,8 +71,12 @@ const listSlice = createSlice({
       action: PayloadAction<{ listId: string; todos: TodoItemProps[] }>
     ) => {
       const { listId, todos } = action.payload;
-      const list = state.lists[listId];
-      if (!list) return;
+      console.log(
+        `List Id: ${action.payload.listId} \n ListItemProps ${action.payload.todos}\n`
+      );
+      const list = state.lists[listId]; // O(1) listId query to Record
+      if (!list) return; // Did not find list
+      console.log(' Found the list\n');
 
       todos.forEach((todo) => {
         if (!list.todo.items[todo.id]) {
@@ -105,7 +109,10 @@ const listSlice = createSlice({
       // Resort
       list.todo.order = sortTodoOrder(list.todo.items, list.todo.order);
     },
-    deleteTodo: () => {},
+    deleteTodo: (
+      state,
+      action: PayloadAction<{ listID: string; todoID: string }>
+    ) => {},
   },
 });
 export const {
