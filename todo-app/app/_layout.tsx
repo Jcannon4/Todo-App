@@ -1,20 +1,21 @@
-import { Stack, useLocalSearchParams } from "expo-router";
-import { Pressable, Text } from "react-native";
-import React, { useLayoutEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { store } from "./store/store";
-import { Provider } from "react-redux";
-import "react-native-get-random-values";
-import HeaderRight from "@/components/HeaderRight";
+import { Stack, useLocalSearchParams } from 'expo-router';
+import { Pressable, Text } from 'react-native';
+import React, { useLayoutEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { store } from './store/store';
+import { Provider } from 'react-redux';
+import 'react-native-get-random-values';
+import HeaderRight from '@/components/HeaderRight';
 
 export default function RootLayout() {
   const title = useLocalSearchParams();
   const navigation = useNavigation();
+  const [deleteOn, setDelete] = React.useState(false);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Pressable onPress={() => alert("menu button has been pressed")}>
-          <Text style={{ color: "#fff", fontSize: 16, paddingRight: 10 }}>
+        <Pressable onPress={() => alert('menu button has been pressed')}>
+          <Text style={{ color: '#fff', fontSize: 16, paddingRight: 10 }}>
             Menu
           </Text>
         </Pressable>
@@ -25,24 +26,24 @@ export default function RootLayout() {
     <Provider store={store}>
       <Stack
         screenOptions={{
-          headerStyle: { backgroundColor: "#6a51ae" },
-          headerTintColor: "#fff",
-          headerTitleStyle: { fontWeight: "bold" },
-          headerTitleAlign: "center",
+          headerStyle: { backgroundColor: '#6a51ae' },
+          headerTintColor: '#fff',
+          headerTitleStyle: { fontWeight: 'bold' },
+          headerTitleAlign: 'center',
         }}
       >
         <Stack.Screen
-          name="index"
+          name='index'
           options={{
-            title: "Home",
+            title: 'Home',
             headerRight: () => <HeaderRight />,
           }}
         />
 
         <Stack.Screen
-          name="todoList"
+          name='todoList'
           options={({ route }) => ({
-            title: (route.params as { title: string })?.title || "Todo List",
+            title: (route.params as { title: string })?.title || 'Todo List',
             // ... other options
           })}
         />

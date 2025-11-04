@@ -15,9 +15,6 @@ interface TodoPageListProps {
 }
 
 export default function TodoPageList(props: TodoPageListProps) {
-  console.log(
-    ' LIST ID : ' + props.listID + '\n todoInputs: ' + props.todoInputsOrder
-  );
   const list = useSelector(
     (state: RootState) => state.data.lists[props.listID] // Access the map of lists by ID
   );

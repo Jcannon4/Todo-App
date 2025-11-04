@@ -1,10 +1,9 @@
-import { v6 as uuidv6 } from "uuid";
-import { StyleSheet, Pressable, Text, View } from "react-native";
-import { Link } from "expo-router";
-import {} from "../todo/todoSlice";
-import { AntDesign } from "@expo/vector-icons";
+import { v6 as uuidv6 } from 'uuid';
+import { StyleSheet, Pressable, Text, View } from 'react-native';
+import { Link } from 'expo-router';
+import { AntDesign } from '@expo/vector-icons';
 
-import { ListItemProps } from "./listSlice";
+import { ListItemProps } from './listSlice';
 // Creates List objects for us to store into the state
 // returns to the task modal before being shipped to the reducer
 export function createListItemProps(text: string): ListItemProps {
@@ -29,7 +28,7 @@ const ListItem = ({
   return (
     <Link
       href={{
-        pathname: "/todoList",
+        pathname: '/todoList',
         params: { id: id, title: title },
       }}
       asChild
@@ -43,9 +42,9 @@ const ListItem = ({
         ></Animated.Image> */}
           <Text style={styles.content}>{title}</Text>
           <AntDesign
-            color="white"
+            color='white'
             style={styles.options}
-            name="right"
+            name='right'
             size={28}
           ></AntDesign>
         </View>
@@ -57,14 +56,14 @@ const ListItem = ({
 const styles = StyleSheet.create({
   container: {
     //flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#1a1a1a",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#1a1a1a',
     borderRadius: 14,
     marginBottom: 20,
     padding: 10,
-    boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.3)",
+    boxShadow: '0px 4px 5px rgba(0, 0, 0, 0.3)',
   },
 
   checkmark: {
@@ -73,11 +72,11 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 5,
-    textAlign: "left",
-    justifyContent: "flex-start",
-    alignContent: "center",
-    color: "#E0E0E0",
-    flexWrap: "wrap",
+    textAlign: 'left',
+    justifyContent: 'flex-start',
+    alignContent: 'center',
+    color: '#E0E0E0',
+    flexWrap: 'wrap',
     marginLeft: 15,
   },
   options: {},

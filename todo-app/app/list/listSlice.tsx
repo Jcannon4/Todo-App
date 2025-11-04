@@ -64,7 +64,12 @@ const listSlice = createSlice({
       delete state.lists[listID];
       state.order = state.order.filter((id) => id !== listID);
     },
-    editListName: () => {},
+    editListName: (
+      state,
+      action: PayloadAction<{ newName: string; listID: string }>
+    ) => {
+      state.lists[action.payload.listID].title = action.payload.newName;
+    },
     arhiveList: () => {}, // TODO
     addTodos: (
       state,
