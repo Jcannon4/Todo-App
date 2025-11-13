@@ -90,7 +90,6 @@ const ListItem = ({
                 source={edit}
                 style={styles.edit}
                 tintColor="grey"
-                //exiting={FadeOut.duration(500)}
                 entering={FadeIn.duration(500)}
               ></Animated.Image>
             </Pressable>
@@ -129,7 +128,6 @@ const ListItem = ({
                 source={trash}
                 style={styles.trash}
                 tintColor="#FF5252"
-                //exiting={FadeOut.duration(500)}
                 entering={FadeIn.duration(500)}
               ></Animated.Image>
             </Pressable>

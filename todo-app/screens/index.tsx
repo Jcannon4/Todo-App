@@ -146,10 +146,23 @@ const styles = StyleSheet.create({
   },
   done: {
     color: "white",
+    //position: "absolute", // Makes the button float
     position: "absolute", // Makes the button float
-    bottom: 40, // Position from the bottom
-    left: 40, // Position from the right
+    bottom: 20, // Position from the bottom
+    left: 20, // Position from the right
     fontSize: 22,
+
+    //Increasing a transparent border to make 'Done' more clickable
+    borderRadius: 20,
+    borderTopWidth: 20,
+    borderBottomWidth: 20,
+    borderLeftWidth: 20,
+    borderRightWidth: 20,
+    borderBottomColor: "transparent",
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderTopColor: 'transparent',
+
   },
   scrollContainer: {
     flex: 3,
