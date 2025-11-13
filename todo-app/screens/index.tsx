@@ -1,11 +1,11 @@
 import React from "react";
-import {
-  Animated,
-  StyleSheet,
-  View,
-  Pressable,
-  Text,
-} from "react-native";
+import { StyleSheet, View, Pressable, Text, Image } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+} from "react-native-reanimated";
 import AddButton from "../components/AddButton";
 import TaskModal from "../components/TaskModal";
 import { createListState } from "@/app/list/listSlice";
@@ -21,20 +21,72 @@ export default function Index() {
     console.log(" Settings have been pressed!!!");
     setOptionState(!optionState);
   };
+  const AnimatedImage = Animated.createAnimatedComponent(Image);
+  const AnimatedText = Animated.createAnimatedComponent(Text);
+  const animationProgress = useSharedValue(0);
+  const textOpacity = useSharedValue(0);
+  const spinOutStyle = useAnimatedStyle(() => {
+    const rotate = `${animationProgress.value * 360}deg`;
+
+    // Interpolate scale from 1 (at 0 progress) down to 0.5 (at 1 progress)
+    // The scale formula is: initial_size - (progress * size_change)
+    const scale = 1 - animationProgress.value * 0.5;
+    const opacity = 1 - animationProgress.value;
+    return {
+      transform: [{ rotate }, { scale }],
+      opacity: opacity,
+    };
+  });
+  const textAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: textOpacity.value,
+    };
+  });
+  React.useEffect(() => {
+    // Define the target values based on the state
+    const imageTarget = optionState ? 1 : 0; // 1 for fully animated, 0 for initial
+    const textTarget = optionState ? 1 : 0; // 1 for visible, 0 for hidden
+
+    // --- ENTRANCE (optionState is true) ---
+    if (optionState) {
+      // 1. Image Spin and Shrink
+      animationProgress.value = withTiming(
+        imageTarget,
+        {
+          duration: 1000,
+          easing: Easing.inOut(Easing.quad),
+        },
+        (isFinished) => {
+          if (isFinished) {
+            // 2. Text Fade In (run on the UI thread, but use runOnJS to start another animation)
+            // We can just start the text animation directly after the image completes.
+            textOpacity.value = withTiming(textTarget, { duration: 500 });
+          }
+        }
+      );
+
+      // --- EXIT (optionState is false) ---
+    } else {
+      // 1. Text Fade Out
+      textOpacity.value = withTiming(
+        textTarget,
+        { duration: 500 },
+        (isFinished) => {
+          if (isFinished) {
+            // 2. Image Spin Back and Grow
+            animationProgress.value = withTiming(imageTarget, {
+              duration: 1000,
+              easing: Easing.inOut(Easing.quad),
+            });
+          }
+        }
+      );
+    }
+  }, [optionState]);
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.welcome}>Welcome to the To-do List app</Text>
-        <Pressable onPress={toggleSettings}>
-          {optionState === false ? (
-            <Animated.Image
-              style={styles.settingsStyle}
-              source={settingsIcon}
-            ></Animated.Image>
-          ) : (
-            <Text style={styles.done}>Done</Text>
-          )}
-        </Pressable>
       </View>
       <HomePageLists optionState={optionState} />
 
@@ -53,6 +105,15 @@ export default function Index() {
         closeModal={setVisibility}
         isListMode={true}
       />
+      <Pressable onPress={toggleSettings}>
+        <AnimatedImage
+          source={settingsIcon}
+          style={[styles.settingsStyle, spinOutStyle]}
+        ></AnimatedImage>
+        <AnimatedText style={[styles.done, textAnimatedStyle]}>
+          Done
+        </AnimatedText>
+      </Pressable>
     </View>
   );
 }
@@ -76,13 +137,19 @@ const styles = StyleSheet.create({
     color: "white",
   },
   settingsStyle: {
-    marginRight: 20,
-    marginTop: 0,
+    position: "absolute", // Makes the button float
+    bottom: 20, // Position from the bottom
+    left: 20, // Position from the right
+    width: 60,
+    height: 60,
     // ...other image styles like width/height
   },
   done: {
     color: "white",
-    fontSize: 18,
+    position: "absolute", // Makes the button float
+    bottom: 40, // Position from the bottom
+    left: 40, // Position from the right
+    fontSize: 22,
   },
   scrollContainer: {
     flex: 3,

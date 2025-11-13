@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { ListItemProps } from "@/app/list/listSlice";
 import ListItem from "@/app/list/listItem";
@@ -8,13 +8,14 @@ import Animated, {
   LinearTransition,
   FadeInDown,
   FadeOutUp,
+  FadeInUp,
 } from "react-native-reanimated";
 
 const HomePageLists = ({ ...props }) => {
   const listRecord: Record<string, ListItemProps> = useSelector(
-    (state: RootState) => state.data.lists,
+    (state: RootState) => state.data.lists
   );
-
+  
   return (
     <ScrollView
       style={styles.scrollContainer}
@@ -39,9 +40,13 @@ const HomePageLists = ({ ...props }) => {
         ))
       ) : (
         // No list data, instruct user to use the '+' button
-        <Text style={styles.instruction}>
+        <Animated.Text
+          style={styles.instruction}
+
+          entering={FadeInUp}
+        >
           Use the + button in bottom right to Create a list!
-        </Text>
+        </Animated.Text>
       )}
     </ScrollView>
   );

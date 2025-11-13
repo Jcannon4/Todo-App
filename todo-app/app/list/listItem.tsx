@@ -90,7 +90,7 @@ const ListItem = ({
                 source={edit}
                 style={styles.edit}
                 tintColor="grey"
-                exiting={FadeOut.duration(500)}
+                //exiting={FadeOut.duration(500)}
                 entering={FadeIn.duration(500)}
               ></Animated.Image>
             </Pressable>
@@ -107,7 +107,6 @@ const ListItem = ({
             <Animated.View
               layout={LinearTransition.duration(300)}
               entering={FadeIn.duration(200)}
-              exiting={FadeOut.duration(500)}
               style={styles.inputContainer}
             >
               <TextInput
@@ -130,14 +129,14 @@ const ListItem = ({
                 source={trash}
                 style={styles.trash}
                 tintColor="#FF5252"
-                exiting={FadeOut.duration(500)}
+                //exiting={FadeOut.duration(500)}
                 entering={FadeIn.duration(500)}
               ></Animated.Image>
             </Pressable>
           ) : (
             <Animated.View
               layout={LinearTransition.duration(300)}
-              exiting={FadeOut.duration(500)}
+              //exiting={FadeOut.duration(500)}
               entering={FadeIn.duration(500)}
             >
               <AntDesign color="white" name="right" size={28}></AntDesign>
