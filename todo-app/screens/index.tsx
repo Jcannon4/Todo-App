@@ -62,7 +62,7 @@ export default function Index() {
             // We can just start the text animation directly after the image completes.
             textOpacity.value = withTiming(textTarget, { duration: 500 });
           }
-        }
+        },
       );
 
       // --- EXIT (optionState is false) ---
@@ -79,7 +79,7 @@ export default function Index() {
               easing: Easing.inOut(Easing.quad),
             });
           }
-        }
+        },
       );
     }
   }, [optionState]);
@@ -95,6 +95,17 @@ export default function Index() {
         style={styles.floatingButton}
         onPress={() => setVisibility(true)}
       />
+
+      <Pressable style={styles.settingsContainer} onPress={toggleSettings}>
+        <AnimatedImage
+          source={settingsIcon}
+          tintColor="white"
+          style={[styles.settingsStyle, spinOutStyle]}
+        ></AnimatedImage>
+        <AnimatedText style={[styles.done, textAnimatedStyle]}>
+          Done
+        </AnimatedText>
+      </Pressable>
       <TaskModal
         title="Create new list"
         placeholder="New List"
@@ -105,15 +116,6 @@ export default function Index() {
         closeModal={setVisibility}
         isListMode={true}
       />
-      <Pressable onPress={toggleSettings}>
-        <AnimatedImage
-          source={settingsIcon}
-          style={[styles.settingsStyle, spinOutStyle]}
-        ></AnimatedImage>
-        <AnimatedText style={[styles.done, textAnimatedStyle]}>
-          Done
-        </AnimatedText>
-      </Pressable>
     </View>
   );
 }
@@ -136,20 +138,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
   },
-  settingsStyle: {
+  settingsContainer: {
     position: "absolute", // Makes the button float
     bottom: 20, // Position from the bottom
-    left: 20, // Position from the right
+    left: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  settingsStyle: {
+    position: "absolute",
     width: 60,
     height: 60,
-    // ...other image styles like width/height
   },
   done: {
     color: "white",
     //position: "absolute", // Makes the button float
-    position: "absolute", // Makes the button float
-    bottom: 20, // Position from the bottom
-    left: 20, // Position from the right
     fontSize: 22,
 
     //Increasing a transparent border to make 'Done' more clickable
@@ -161,8 +164,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "transparent",
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
-    borderTopColor: 'transparent',
-
+    borderTopColor: "transparent",
   },
   scrollContainer: {
     flex: 3,

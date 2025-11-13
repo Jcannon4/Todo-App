@@ -41,7 +41,8 @@ const ListItem = ({
   id,
   todo,
   optionState,
-}: ListItemProps & { optionState: boolean }) => {
+  onLongPress,
+}: ListItemProps & { optionState: boolean; onLongPress?: VoidFunction }) => {
   const [isEditing, setIsEditing] = React.useState<boolean>(false);
   const [titleValue, setTitleValue] = React.useState<string>(title);
   const inputRef = React.useRef<TextInput>(null);
@@ -79,7 +80,7 @@ const ListItem = ({
         </Link>
       )}
     >
-      <Pressable>
+      <Pressable onLongPress={onLongPress}>
         <Animated.View
           style={styles.container}
           layout={LinearTransition.springify().damping(15)}
@@ -150,7 +151,9 @@ const styles = StyleSheet.create({
   container: {
     //flex: 1,
     flexDirection: "row",
-    alignItems: "center",
+    width: "95%",
+    alignContent: "center",
+    alignSelf: "center", // Helps with overall centering if needed
     justifyContent: "center",
     backgroundColor: "#1a1a1a",
     borderRadius: 14,
@@ -182,7 +185,7 @@ const styles = StyleSheet.create({
     flex: 5,
     textAlign: "left",
     justifyContent: "flex-start",
-    alignContent: "center",
+    alignSelf: "center",
     color: "#E0E0E0",
     flexWrap: "wrap",
     marginLeft: 15,

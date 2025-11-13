@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createRef, useRef } from "react";
 import {
   Modal,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
+  TextInput,
 } from "react-native";
 import RectangleButton from "./RectangleButton";
 import { useDispatch } from "react-redux";
@@ -42,6 +43,7 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
   const dispatch = useDispatch<AppDispatch>();
   const [inputs, setInputs] = React.useState<string[]>([""]);
   const [isEdit, setIsEdit] = React.useState<boolean>(false);
+
   // Handles submission logic when user presses 'confirm'
   const onSubmit = (inputs: string[]) => {
     // Reset input fields after submission
@@ -70,6 +72,7 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
   // Provides the user with another Input Field
   const handleAddInput = () => {
     setInputs([...inputs, ""]);
+    setIsEdit(true);
   };
   // Updates the correct inputfield the user is typing into
   const handleInputChange = (text: string, index: number) => {
@@ -89,6 +92,7 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
   const handleFocus = () => {
     setIsEdit(true);
   };
+
   return (
     <View>
       <Modal

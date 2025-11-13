@@ -17,12 +17,12 @@ export interface ListItemProps {
 }
 export interface ListState {
   lists: Record<string, ListItemProps>; // map for O(1) access
-
+  order: string[];
 }
 
 const initialState: ListState = {
   lists: {},
-
+  order: [],
 };
 
 const listSlice = createSlice({
@@ -39,16 +39,17 @@ const listSlice = createSlice({
         if (newList.title.trim() === "" || state.lists[newList.id]) return;
 
         state.lists[newList.id] = newList;
-        
+        state.order.push(newList.id);
       });
     },
-    
-
+    reorderLists: (state, action) => {
+      state.order = action.payload; // just pass reordered ids
+    },
     deleteList: (state, action: PayloadAction<{ listID: string }>) => {
       const { listID } = action.payload;
       if (!state.lists[listID]) return;
       delete state.lists[listID];
-      
+      state.order = state.order.filter((x) => x !== listID);
     },
     editListName: (
       state,
@@ -133,6 +134,7 @@ const listSlice = createSlice({
 export const {
   createListState,
   deleteList,
+  reorderLists,
   editListName,
   addTodos,
   deleteTodo,
