@@ -20,7 +20,6 @@ import Animated, {
   FadeInRight,
   LinearTransition,
 } from "react-native-reanimated";
-import { ListItemProps, TodoItemProps } from "@/app/list/listSlice";
 import { UnknownAction } from "@reduxjs/toolkit";
 
 interface TaskModalProps<T> {

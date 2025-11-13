@@ -20,8 +20,6 @@ export function createListItemProps(text: string): ListItemProps {
   const listData: ListItemProps = {
     id: uuidv6(),
     title: text,
-    isComplete: false,
-    isArchived: false,
     // MIGHT HAVE TO REDO THIS I think items: {} is wrong
     todo: { items: {}, order: [], incompleteCount: 0 }, //  what does a TodoState look like?
   };
@@ -41,9 +39,7 @@ const ConditionalWrapper = ({
 const ListItem = ({
   title,
   id,
-  isComplete,
   todo,
-  isArchived,
   optionState,
 }: ListItemProps & { optionState: boolean }) => {
   const [isEditing, setIsEditing] = React.useState<boolean>(false);

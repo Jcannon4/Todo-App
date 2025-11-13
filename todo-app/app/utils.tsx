@@ -46,24 +46,24 @@ export function moveItem<T extends { isComplete: boolean }>(
   return newOrder;
 }
 
-export function insertBeforeFirstComplete<T extends { isComplete: boolean }>(
-  items: Record<string, T>,
-  order: string[],
-  newId: string,
-  newItem: T,
-): string[] {
-  const newOrder = [...order];
+// export function insertBeforeFirstComplete<T>(
+//   items: Record<string, T>,
+//   order: string[],
+//   newId: string,
+//   newItem: T,
+// ): string[] {
+//   const newOrder = [...order];
 
-  if (newItem.isComplete) {
-    newOrder.push(newId);
-  } else {
-    const firstCompleteIndex = order.findIndex((id) => items[id]?.isComplete);
-    if (firstCompleteIndex === -1) newOrder.push(newId);
-    else newOrder.splice(firstCompleteIndex, 0, newId);
-  }
+//   if (newItem.isComplete) {
+//     newOrder.push(newId);
+//   } else {
+//     const firstCompleteIndex = order.findIndex((id) => items[id]?.isComplete);
+//     if (firstCompleteIndex === -1) newOrder.push(newId);
+//     else newOrder.splice(firstCompleteIndex, 0, newId);
+//   }
 
-  return newOrder;
-}
+//   return newOrder;
+// }
 
 export function sortTodoOrder(
   items: Record<string, TodoItemProps>,

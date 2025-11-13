@@ -33,8 +33,6 @@ const HomePageLists = ({ ...props }) => {
               title={list.title}
               todo={list.todo}
               id={list.id}
-              isComplete={list.isComplete}
-              isArchived={list.isArchived}
               optionState={props.optionState}
             ></ListItem>
           </Animated.View>
