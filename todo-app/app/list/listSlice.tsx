@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { sortTodoOrder, moveItem, insertBeforeFirstComplete } from '../utils';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { sortTodoOrder, moveItem, insertBeforeFirstComplete } from "../utils";
 export interface TodoItemProps {
   todoId: string;
   msg: string;
@@ -28,24 +28,24 @@ const initialState: ListState = {
 };
 
 const listSlice = createSlice({
-  name: 'list',
+  name: "list",
   initialState,
   reducers: {
     createListState: (
       state,
-      action: PayloadAction<{ lists: ListItemProps[] }>
+      action: PayloadAction<{ lists: ListItemProps[] }>,
     ) => {
       const inputs = action.payload.lists;
 
       inputs.forEach((newList) => {
-        if (newList.title.trim() === '' || state.lists[newList.id]) return;
+        if (newList.title.trim() === "" || state.lists[newList.id]) return;
 
         state.lists[newList.id] = newList;
         state.order = insertBeforeFirstComplete(
           state.lists,
           state.order,
           newList.id,
-          newList
+          newList,
         );
       });
     },
@@ -66,22 +66,21 @@ const listSlice = createSlice({
     },
     editListName: (
       state,
-      action: PayloadAction<{ newName: string; listID: string }>
+      action: PayloadAction<{ newName: string; listID: string }>,
     ) => {
       state.lists[action.payload.listID].title = action.payload.newName;
     },
-    arhiveList: () => {}, // TODO
     addTodos: (
       state,
-      action: PayloadAction<{ listId: string; todos: TodoItemProps[] }>
+      action: PayloadAction<{ listId: string; todos: TodoItemProps[] }>,
     ) => {
       const { listId, todos } = action.payload;
       console.log(
-        `List Id: ${action.payload.listId} \n ListItemProps ${action.payload.todos}\n`
+        `List Id: ${action.payload.listId} \n ListItemProps ${action.payload.todos}\n`,
       );
       const list = state.lists[listId]; // O(1) listId query to Record
       if (!list) return; // Did not find list
-      console.log(' Found the list\n');
+      console.log(" Found the list\n");
 
       todos.forEach((todo) => {
         if (!list.todo.items[todo.todoId]) {
@@ -97,7 +96,7 @@ const listSlice = createSlice({
 
     toggleTodo: (
       state,
-      action: PayloadAction<{ listId: string; todoId: string }>
+      action: PayloadAction<{ listId: string; todoId: string }>,
     ) => {
       const { listId, todoId } = action.payload;
       const list = state.lists[listId];
@@ -108,7 +107,7 @@ const listSlice = createSlice({
 
       // Update counts
       list.todo.incompleteCount = Object.values(list.todo.items).filter(
-        (t) => !t.isComplete
+        (t) => !t.isComplete,
       ).length;
 
       // Resort
@@ -116,7 +115,7 @@ const listSlice = createSlice({
     },
     deleteTodo: (
       state,
-      action: PayloadAction<{ listId: string; todoId: string }>
+      action: PayloadAction<{ listId: string; todoId: string }>,
     ) => {
       const { listId, todoId } = action.payload;
 
@@ -149,7 +148,6 @@ export const {
   createListState,
   deleteList,
   editListName,
-  arhiveList,
   addTodos,
   deleteTodo,
   toggleTodo,

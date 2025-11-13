@@ -1,35 +1,42 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { StyleSheet, View, Pressable } from "react-native";
+import {
+  Animated,
+  StyleSheet,
+  View,
+  Pressable,
+  Text,
+} from "react-native";
 import AddButton from "../components/AddButton";
 import TaskModal from "../components/TaskModal";
-import { RootState, AppDispatch } from "../app/store/store";
 import { createListState } from "@/app/list/listSlice";
 import HomePageLists from "@/components/HomePageLists";
-import { menuOff } from "../app/menu/menuSlice";
 import { createListItemProps } from "@/app/list/listItem";
+import settingsIcon from "../assets/images/settings.png";
 
 export default function Index() {
   const [isVisible, setVisibility] = React.useState<boolean>(false);
-  const dispatch = useDispatch<AppDispatch>();
-  const isMenuOpen: boolean = useSelector(
-    (state: RootState) => state.menu.isOpen
-  );
-  const closingMenu = () => {
-    console.log("Firing off press + " + isMenuOpen);
-    dispatch(menuOff(false));
+
+  const [optionState, setOptionState] = React.useState<boolean>(false);
+  const toggleSettings = () => {
+    console.log(" Settings have been pressed!!!");
+    setOptionState(!optionState);
   };
   return (
     <View style={styles.container}>
-      <HomePageLists />
-
-      {isMenuOpen ? ( // Pressable renders when options menu renders,
-        // This is so the menu options closes before user clicks on other items
-        <Pressable
-          style={[StyleSheet.absoluteFill, { zIndex: 10 }]}
-          onPress={closingMenu}
-        />
-      ) : null}
+      <View style={styles.headerContainer}>
+        <Text style={styles.welcome}>Welcome to the To-do List app</Text>
+        <Pressable onPress={toggleSettings}>
+          {optionState === false ? (
+            <Animated.Image
+              style={styles.settingsStyle}
+              source={settingsIcon}
+            ></Animated.Image>
+          ) : (
+            <Text style={styles.done}>Done</Text>
+          )}
+        </Pressable>
+      </View>
+      <HomePageLists optionState={optionState} />
 
       <AddButton
         buttonSize={32}
@@ -53,9 +60,29 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "#494D5F",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 20,
+  },
+  welcome: {
+    fontSize: 24,
+    flex: 1,
+    // To logically center the text itself within the flexible space it occupies
+    textAlign: "center",
+    color: "white",
+  },
+  settingsStyle: {
+    marginRight: 20,
+    marginTop: 0,
+    // ...other image styles like width/height
+  },
+  done: {
+    color: "white",
+    fontSize: 18,
   },
   scrollContainer: {
     flex: 3,

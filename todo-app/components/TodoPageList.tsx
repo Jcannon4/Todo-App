@@ -1,13 +1,13 @@
-import { ScrollView, StyleSheet } from 'react-native';
-import React from 'react';
+import { ScrollView, StyleSheet } from "react-native";
+import React from "react";
 import Animated, {
   FadeInDown,
   FadeOutUp,
   LinearTransition,
-} from 'react-native-reanimated';
-import TodoItem from '@/app/todo/todoItem';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/app/store/store';
+} from "react-native-reanimated";
+import TodoItem from "@/app/todo/todoItem";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 
 interface TodoPageListProps {
   listID: string;
@@ -16,7 +16,7 @@ interface TodoPageListProps {
 
 export default function TodoPageList(props: TodoPageListProps) {
   const list = useSelector(
-    (state: RootState) => state.data.lists[props.listID] // Access the map of lists by ID
+    (state: RootState) => state.data.lists[props.listID], // Access the map of lists by ID
   );
 
   return (
@@ -54,8 +54,8 @@ export default function TodoPageList(props: TodoPageListProps) {
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 3,
-    paddingTop: '8%',
-    width: '80%',
+    paddingTop: "8%",
+    width: "80%",
     minWidth: 300,
   },
 });

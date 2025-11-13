@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Modal,
   StyleSheet,
@@ -9,19 +9,19 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import RectangleButton from './RectangleButton';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/app/store/store';
+} from "react-native";
+import RectangleButton from "./RectangleButton";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/store/store";
 
-import InputField from './InputField';
-import AddButton from './AddButton';
+import InputField from "./InputField";
+import AddButton from "./AddButton";
 import Animated, {
   FadeInRight,
   LinearTransition,
-} from 'react-native-reanimated';
-import { ListItemProps, TodoItemProps } from '@/app/list/listSlice';
-import { UnknownAction } from '@reduxjs/toolkit';
+} from "react-native-reanimated";
+import { ListItemProps, TodoItemProps } from "@/app/list/listSlice";
+import { UnknownAction } from "@reduxjs/toolkit";
 
 interface TaskModalProps<T> {
   createPropObject: (text: string) => T;
@@ -41,21 +41,21 @@ interface TaskModalProps<T> {
 
 export default function TaskModal<T>(props: TaskModalProps<T>) {
   const dispatch = useDispatch<AppDispatch>();
-  const [inputs, setInputs] = React.useState<string[]>(['']);
+  const [inputs, setInputs] = React.useState<string[]>([""]);
   const [isEdit, setIsEdit] = React.useState<boolean>(false);
   // Handles submission logic when user presses 'confirm'
   const onSubmit = (inputs: string[]) => {
     // Reset input fields after submission
-    setInputs(['']);
+    setInputs([""]);
     props.closeModal(false);
     const createdObjects = inputs
-      .filter((i) => i.trim() !== '')
+      .filter((i) => i.trim() !== "")
       .map((input) => props.createPropObject(input));
     // Convert each user input string into a TodoItem object
     if (props.isListMode) {
       dispatch(props.onSubmit({ lists: createdObjects }));
     } else {
-      console.log('Dispatching todos');
+      console.log("Dispatching todos");
       dispatch(props.onSubmit({ listId: props.listID, todos: createdObjects }));
     }
     setIsEdit(false);
@@ -63,14 +63,14 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
   // User has touched outside of modal, or pressed 'cancel' button
   // Closing modal and setting our inputs state to default
   const onClose = () => {
-    setInputs(['']);
+    setInputs([""]);
     props.closeModal(false);
     setIsEdit(false);
   };
   // User has clicked the '+' button to add another inputField within the modal
   // Provides the user with another Input Field
   const handleAddInput = () => {
-    setInputs([...inputs, '']);
+    setInputs([...inputs, ""]);
   };
   // Updates the correct inputfield the user is typing into
   const handleInputChange = (text: string, index: number) => {
@@ -96,12 +96,12 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
         transparent
         onDismiss={onClose}
         visible={props.isVisible}
-        animationType='slide'
+        animationType="slide"
         onRequestClose={onClose}
       >
         <Pressable style={styles.modalBackground} onPress={onbackgroundClose}>
           <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
             style={styles.keyboardContainer}
           >
             <Animated.View
@@ -112,11 +112,11 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
                 <Text style={styles.modalTitle}>{props.title}</Text>
 
                 <ScrollView
-                  indicatorStyle='black'
+                  indicatorStyle="black"
                   showsVerticalScrollIndicator={true}
                   alwaysBounceVertical={true}
-                  keyboardShouldPersistTaps='handled'
-                  keyboardDismissMode='on-drag'
+                  keyboardShouldPersistTaps="handled"
+                  keyboardDismissMode="on-drag"
                   style={styles.scrollContainer}
                 >
                   {inputs.map((input, index) => (
@@ -127,7 +127,7 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
                     >
                       <InputField
                         key={index}
-                        placeholderTextColor='#C0C0C0'
+                        placeholderTextColor="#C0C0C0"
                         placeholder={`${props.placeholder} #${index + 1}`}
                         value={input}
                         onFocus={handleFocus}
@@ -141,9 +141,9 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
                 </ScrollView>
                 <Animated.View layout={LinearTransition} style={styles.buttons}>
                   <RectangleButton
-                    title='Cancel'
-                    backColor='grey'
-                    fontColor='white'
+                    title="Cancel"
+                    backColor="grey"
+                    fontColor="white"
                     onPress={onClose}
                   ></RectangleButton>
                   <AddButton
@@ -154,8 +154,8 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
 
                   <RectangleButton
                     title={props.confirmTitle}
-                    backColor='green'
-                    fontColor='white'
+                    backColor="green"
+                    fontColor="white"
                     onPress={() => onSubmit(inputs)}
                   ></RectangleButton>
                 </Animated.View>
@@ -171,28 +171,28 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
 const styles = StyleSheet.create({
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0,50,0,0.4)',
-    justifyContent: 'center',
+    backgroundColor: "rgba(0,50,0,0.4)",
+    justifyContent: "center",
     //paddingTop: 100,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalContainer: {
-    width: '85%',
-    maxHeight: '100%',
-    backgroundColor: '#fff',
+    width: "85%",
+    maxHeight: "100%",
+    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
     elevation: 5,
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   keyboardContainer: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
   scrollContainer: {
     maxHeight: 300,
@@ -200,34 +200,34 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 10,
     height: 10000,
     fontSize: 36,
     marginBottom: 15,
-    color: '#000',
+    color: "#000",
   },
   addInputContainer: {},
   addInput: {
     fontSize: 12,
-    color: 'black',
-    textAlign: 'center',
+    color: "black",
+    textAlign: "center",
   },
   buttons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   addButton: {
     //flex: 1,
-    backgroundColor: '#007bff',
+    backgroundColor: "#007bff",
     borderRadius: 30,
     width: 40,
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     elevation: 8, // Android shadow
-    boxShadow: '0px 4px 5px rgba(0, 0, 0, 0.3)',
+    boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.3)",
   },
 });

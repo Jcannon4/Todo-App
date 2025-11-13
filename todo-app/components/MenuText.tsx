@@ -1,9 +1,9 @@
-import { StyleSheet, Text, Pressable } from 'react-native';
+import { StyleSheet, Text, Pressable } from "react-native";
 
 const MenuText = ({ ...props }) => {
   return (
     <Pressable
-      onPress={props.onSubmit}
+      onPress={() => props.onSubmit()}
       style={[
         styles.container,
         {
@@ -18,12 +18,12 @@ const MenuText = ({ ...props }) => {
 
 const styles = StyleSheet.create({
   container: {
-    borderColor: 'white',
+    borderColor: "white",
     padding: 8,
   },
   content: {
     fontSize: 12,
-    color: 'white',
+    color: "white",
     paddingLeft: 10,
     paddingTop: 5,
   },
