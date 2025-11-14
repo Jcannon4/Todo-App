@@ -1,4 +1,4 @@
-import { TodoItemProps } from './list/listSlice';
+import { TodoItemProps } from "./list/listSlice";
 
 export default function consoleLog(a: string) {
   console.log(a);
@@ -15,7 +15,7 @@ export function logObject(obj: any) {
 export function moveItem<T extends { isComplete: boolean }>(
   items: Record<string, T>,
   order: string[],
-  targetId: string
+  targetId: string,
 ): string[] {
   const item = items[targetId];
   if (!item) return order;
@@ -34,7 +34,7 @@ export function moveItem<T extends { isComplete: boolean }>(
   } else {
     // Move to just above first complete item (or bottom if none)
     const firstCompleteIndex = newOrder.findIndex(
-      (id) => items[id]?.isComplete
+      (id) => items[id]?.isComplete,
     );
     if (firstCompleteIndex === -1) {
       newOrder.push(targetId);
@@ -48,7 +48,7 @@ export function moveItem<T extends { isComplete: boolean }>(
 
 export function sortTodoOrder(
   items: Record<string, TodoItemProps>,
-  order: string[]
+  order: string[],
 ): string[] {
   const incomplete: string[] = [];
   const complete: string[] = [];

@@ -188,14 +188,13 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 15,
     backgroundColor: "#2a2a2a",
-    borderRadius: 8,
     justifyContent: "center",
   },
   input: {
     paddingHorizontal: 10,
     paddingVertical: 6,
     fontSize: 16,
-    borderColor: "transparent",
+    color: "white",
     // alignSelf: 'center'
     justifyContent: "center",
   },

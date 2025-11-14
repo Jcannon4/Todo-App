@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import React from "react";
 import Animated, {
   FadeInDown,
@@ -48,6 +48,7 @@ export default function TodoPageList(props: TodoPageListProps) {
           </Animated.View>
         );
       })}
+      <View style={styles.footer}></View>
     </ScrollView>
   );
 }
@@ -57,5 +58,8 @@ const styles = StyleSheet.create({
     paddingTop: "8%",
     width: "90%",
     minWidth: 300,
+  },
+  footer: {
+    height: 150,
   },
 });
