@@ -42,3 +42,6 @@ app-example
 # generated native folders
 /ios
 /android
+
+#nativefier build tools
+/TodoList-darwin-x64

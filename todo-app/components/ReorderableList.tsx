@@ -23,7 +23,7 @@ export function ReorderableList<T>({
   onReorder,
 }: Props<T>) {
   const positions = React.useRef(
-    data.map((_, index) => index * itemHeight)
+    data.map((_, index) => index * itemHeight),
   ).current;
 
   const order = React.useRef(data.map(keyExtractor)).current;

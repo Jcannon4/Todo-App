@@ -19,8 +19,7 @@ const styles = StyleSheet.create({
   input: {
     margin: 12,
     fontSize: 32,
-    borderWidth: 1,
-    borderColor: "#ccc",
+    //borderColor: "#ccc",
     borderRadius: 8,
     alignItems: "center",
     padding: 10,

@@ -192,10 +192,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   input: {
-    color: "#E0E0E0",
     paddingHorizontal: 10,
     paddingVertical: 6,
     fontSize: 16,
+    borderColor: "transparent",
     // alignSelf: 'center'
     justifyContent: "center",
   },

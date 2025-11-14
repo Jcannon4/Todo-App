@@ -26,7 +26,7 @@ type Props = {
 
 export default function DraggableFlatList({ data, onReorder }: Props) {
   const positions = useSharedValue(
-    Object.fromEntries(data.map((item, i) => [item.id, i]))
+    Object.fromEntries(data.map((item, i) => [item.id, i])),
   );
 
   const flatListHeight = useRef(0);
@@ -113,7 +113,7 @@ function DraggableRow({
       const newIndex = clamp(
         Math.floor((currentIndex * ITEM_HEIGHT + e.translationY) / ITEM_HEIGHT),
         0,
-        dataLength - 1
+        dataLength - 1,
       );
 
       if (newIndex !== currentIndex) {

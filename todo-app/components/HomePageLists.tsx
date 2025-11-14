@@ -17,26 +17,26 @@ import DraggableFlatList, {
 const HomePageLists = ({ ...props }) => {
   const dispatch = useDispatch();
   const listRecord: Record<string, ListItemProps> = useSelector(
-    (state: RootState) => state.data.lists
+    (state: RootState) => state.data.lists,
   );
   const listOrder: string[] = useSelector(
-    (state: RootState) => state.data.order
+    (state: RootState) => state.data.order,
   );
   const data = React.useMemo(
     () => listOrder.map((id) => listRecord[id]),
-    [listOrder, listRecord]
+    [listOrder, listRecord],
   );
 
   const handleReorder = React.useCallback(
     (newOrder: string[]) => {
       dispatch(reorderLists(newOrder));
     },
-    [dispatch]
+    [dispatch],
   );
   const handleDragEndMobile = React.useCallback(
     ({ data }: { data: ListItemProps[] }) =>
       handleReorder(data.map((item) => item.id)),
-    [handleReorder]
+    [handleReorder],
   );
 
   const renderItemDraggable = React.useCallback(
@@ -51,7 +51,7 @@ const HomePageLists = ({ ...props }) => {
         />
       </View>
     ),
-    [props.optionState]
+    [props.optionState],
   );
   /* -------------------------
      No Data Display
