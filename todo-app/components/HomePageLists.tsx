@@ -7,8 +7,8 @@ import { RootState } from "../app/store/store";
 import Animated, {
   LinearTransition,
   FadeInDown,
-  FadeOutUp,
   FadeInUp,
+  SlideOutLeft,
 } from "react-native-reanimated";
 import DraggableFlatList, {
   RenderItemParams,
@@ -26,13 +26,13 @@ const HomePageLists = ({ ...props }) => {
     () => listOrder.map((id) => listRecord[id]),
     [listOrder, listRecord]
   );
+
   const handleReorder = React.useCallback(
     (newOrder: string[]) => {
       dispatch(reorderLists(newOrder));
     },
     [dispatch]
   );
-
   const handleDragEndMobile = React.useCallback(
     ({ data }: { data: ListItemProps[] }) =>
       handleReorder(data.map((item) => item.id)),
@@ -41,16 +41,7 @@ const HomePageLists = ({ ...props }) => {
 
   const renderItemDraggable = React.useCallback(
     ({ item, drag, isActive }: RenderItemParams<ListItemProps>) => (
-      <Animated.View
-        key={item.id}
-        layout={LinearTransition}
-        entering={FadeInDown.duration(200)}
-        exiting={FadeOutUp.duration(500)}
-        style={[
-          styles.itemContainer,
-          isActive && { opacity: 0.9, transform: [{ scale: 1.02 }] },
-        ]}
-      >
+      <View>
         <ListItem
           title={item.title}
           todo={item.todo}
@@ -58,12 +49,12 @@ const HomePageLists = ({ ...props }) => {
           optionState={props.optionState}
           onLongPress={drag}
         />
-      </Animated.View>
+      </View>
     ),
     [props.optionState]
   );
   /* -------------------------
-     No Data Display instructions
+     No Data Display
      ------------------------- */
   if (data.length === 0) {
     return (
@@ -77,7 +68,10 @@ const HomePageLists = ({ ...props }) => {
      ------------------------- */
   if (Platform.OS === "ios" || Platform.OS === "android") {
     return (
-      <View style={styles.scrollContainer}>
+      <Animated.View
+        onLayout={() => LinearTransition.delay(100)}
+        style={styles.scrollContainer}
+      >
         <DraggableFlatList
           data={data}
           ListFooterComponent={<View style={styles.footer} />}
@@ -86,8 +80,15 @@ const HomePageLists = ({ ...props }) => {
           renderItem={renderItemDraggable}
           showsVerticalScrollIndicator={false}
           activationDistance={20} // how long to hold before drag starts
+          itemEnteringAnimation={FadeInDown.duration(200)}
+          // itemLayoutAnimation={LinearTransition}
+          autoscrollSpeed={160}
+          autoscrollThreshold={60}
+          //enableLayoutAnimationExperimental={true}
+          containerStyle={{ paddingBottom: 100 }}
         />
-      </View>
+      </Animated.View>
+      //  <DraggableFlatList data={data} onReorder={handleReorder}></DraggableFlatList>
     );
   }
   /* -------------------------
@@ -103,10 +104,10 @@ const HomePageLists = ({ ...props }) => {
         {Object.values(listRecord).map((list) => (
           <Animated.View
             key={list.id}
-            style={{marginTop: 10}}
-            layout={LinearTransition}
+            style={{ marginTop: 10 }}
+            layout={LinearTransition.delay(500)}
             entering={FadeInDown.duration(200)}
-            exiting={FadeOutUp.duration(500)}
+            exiting={SlideOutLeft.duration(500)}
           >
             <ListItem
               title={list.title}

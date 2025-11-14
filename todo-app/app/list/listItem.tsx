@@ -1,10 +1,6 @@
 import { v6 as uuidv6 } from "uuid";
 import { StyleSheet, Pressable, TextInput, Keyboard } from "react-native";
-import Animated, {
-  LinearTransition,
-  FadeOut,
-  FadeIn,
-} from "react-native-reanimated";
+import Animated, { LinearTransition, FadeIn } from "react-native-reanimated";
 import { Link } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import edit from "../../assets/images/edit.png";
@@ -46,7 +42,6 @@ const ListItem = ({
   const [isEditing, setIsEditing] = React.useState<boolean>(false);
   const [titleValue, setTitleValue] = React.useState<string>(title);
   const inputRef = React.useRef<TextInput>(null);
-
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -61,7 +56,6 @@ const ListItem = ({
     Keyboard.dismiss();
   };
   const onDelete = () => {
-    console.log("Deleting List");
     dispatch(deleteList({ listID: id }));
   };
 
@@ -83,7 +77,7 @@ const ListItem = ({
       <Pressable onLongPress={onLongPress}>
         <Animated.View
           style={styles.container}
-          layout={LinearTransition.springify().damping(15)}
+          layout={LinearTransition.duration(300)}
         >
           {optionState ? (
             <Pressable onPress={openEditor}>
@@ -129,7 +123,7 @@ const ListItem = ({
                 source={trash}
                 style={styles.trash}
                 tintColor="#FF5252"
-                entering={FadeIn.duration(500)}
+                entering={FadeIn.duration(300)}
               ></Animated.Image>
             </Pressable>
           ) : (
@@ -151,7 +145,7 @@ const styles = StyleSheet.create({
   container: {
     //flex: 1,
     flexDirection: "row",
-    width: "95%",
+    width: "88%",
     alignContent: "center",
     alignSelf: "center", // Helps with overall centering if needed
     justifyContent: "center",
@@ -195,12 +189,15 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     backgroundColor: "#2a2a2a",
     borderRadius: 8,
+    justifyContent: "center",
   },
   input: {
     color: "#E0E0E0",
     paddingHorizontal: 10,
     paddingVertical: 6,
     fontSize: 16,
+    // alignSelf: 'center'
+    justifyContent: "center",
   },
 });
 
