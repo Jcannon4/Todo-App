@@ -50,7 +50,8 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
   const scrollRef = React.useRef<ScrollView | null>(null);
   // When The Task Modal renders, focus on the first textinput field
 
-  // Changes cursor for desktop
+  // Places cursor into the new textfield for user
+  // TODO: Make the Desktop version work with onMount rather than stinky timers
   React.useEffect(() => {
     if (!shouldFocusNewInput) return;
     // Fast Load for ios
