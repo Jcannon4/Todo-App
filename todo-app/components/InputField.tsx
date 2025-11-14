@@ -2,14 +2,14 @@ import React from "react";
 import { StyleSheet, TextInput } from "react-native";
 
 const InputField = ({ ...props }) => {
-  const [text, onChangeText] = React.useState("");
   return (
     <TextInput
       style={styles.input}
       keyboardAppearance="dark"
       clearButtonMode="while-editing"
-      onChangeText={onChangeText}
-      value={text}
+      value={props.text}
+      ref={props.ref}
+      onLayout={props.onLayout}
       {...props}
     />
   );

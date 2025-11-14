@@ -103,6 +103,7 @@ const HomePageLists = ({ ...props }) => {
         {Object.values(listRecord).map((list) => (
           <Animated.View
             key={list.id}
+            style={{marginTop: 10}}
             layout={LinearTransition}
             entering={FadeInDown.duration(200)}
             exiting={FadeOutUp.duration(500)}
@@ -115,6 +116,7 @@ const HomePageLists = ({ ...props }) => {
             ></ListItem>
           </Animated.View>
         ))}
+        <View style={styles.footer} />
       </ScrollView>
     );
   }
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 3,
     paddingTop: "8%",
-    width: "80%",
+    width: "95%",
     minWidth: 300,
     alignSelf: "center",
   },

@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   TextInput,
+  LayoutChangeEvent,
 } from "react-native";
 import RectangleButton from "./RectangleButton";
 import { useDispatch } from "react-redux";
@@ -42,7 +43,37 @@ interface TaskModalProps<T> {
 export default function TaskModal<T>(props: TaskModalProps<T>) {
   const dispatch = useDispatch<AppDispatch>();
   const [inputs, setInputs] = React.useState<string[]>([""]);
-  const [isEdit, setIsEdit] = React.useState<boolean>(false);
+  const [shouldFocusNewInput, setShouldFocusNewInput] = React.useState(false);
+  const [isUserEditing, setIsUserEditing] = React.useState(false);
+  // Create an reference to an array of TextInputs
+  const inputRefs = React.useRef<(TextInput | null)[]>([]);
+  const scrollRef = React.useRef<ScrollView | null>(null);
+  // When The Task Modal renders, focus on the first textinput field
+
+  // Changes cursor for desktop
+  React.useEffect(() => {
+    if (!shouldFocusNewInput) return;
+    // Fast Load for ios
+    if (Platform.OS !== "web") {
+      scrollRef.current?.scrollTo({ y: 0, animated: true });
+      inputRefs.current[inputs.length - 1]?.focus();
+    }
+    // SLower rendering for desktop build
+    else {
+      const lastIndex = inputs.length - 1;
+      setTimeout(() => {
+        scrollRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+      // small timeout to allow the new item to mount / layout
+      setTimeout(() => {
+        // simplest: scroll to end to make sure last input is visible
+        // better strategies (measure and scroll to exact position) can be added later
+        scrollRef.current?.scrollToEnd({ animated: true });
+        inputRefs.current[lastIndex]?.focus();
+        setShouldFocusNewInput(false); // we finished the "auto-focus" action
+      }, 1020);
+    }
+  }, [inputs, shouldFocusNewInput]);
 
   // Handles submission logic when user presses 'confirm'
   const onSubmit = (inputs: string[]) => {
@@ -59,38 +90,42 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
       console.log("Dispatching todos");
       dispatch(props.onSubmit({ listId: props.listID, todos: createdObjects }));
     }
-    setIsEdit(false);
+    setIsUserEditing(false);
   };
   // User has touched outside of modal, or pressed 'cancel' button
   // Closing modal and setting our inputs state to default
   const onClose = () => {
     setInputs([""]);
+    Keyboard.dismiss();
     props.closeModal(false);
-    setIsEdit(false);
+    setIsUserEditing(false);
   };
   // User has clicked the '+' button to add another inputField within the modal
   // Provides the user with another Input Field
   const handleAddInput = () => {
-    setInputs([...inputs, ""]);
-    setIsEdit(true);
+    setInputs((prev) => [...prev, ""]);
+    setShouldFocusNewInput(true);
   };
   // Updates the correct inputfield the user is typing into
   const handleInputChange = (text: string, index: number) => {
-    const newInputs = [...inputs];
-    newInputs[index] = text;
-    setInputs(newInputs);
+    setInputs((prev) => {
+      const next = [...prev];
+      next[index] = text;
+      return next;
+    });
   };
   // Do not close the modal when the user is editing a text input and clicks in the negative space
   const onbackgroundClose = () => {
-    if (isEdit) {
+    if (isUserEditing) {
       Keyboard.dismiss();
-      setIsEdit(false);
+      setIsUserEditing(false);
     } else {
       props.closeModal(false);
     }
   };
   const handleFocus = () => {
-    setIsEdit(true);
+    setIsUserEditing(true);
+    setShouldFocusNewInput(false); // prevent auto-focus override
   };
 
   return (
@@ -101,6 +136,7 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
         visible={props.isVisible}
         animationType="slide"
         onRequestClose={onClose}
+        onShow={() => inputRefs.current[0]?.focus()} // Focuses on first inputref for desktop
       >
         <Pressable style={styles.modalBackground} onPress={onbackgroundClose}>
           <KeyboardAvoidingView
@@ -115,6 +151,7 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
                 <Text style={styles.modalTitle}>{props.title}</Text>
 
                 <ScrollView
+                  ref={scrollRef}
                   indicatorStyle="black"
                   showsVerticalScrollIndicator={true}
                   alwaysBounceVertical={true}
@@ -135,6 +172,9 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
                         value={input}
                         onFocus={handleFocus}
                         mulitline={true}
+                        ref={(el: any) => {
+                          inputRefs.current[index] = el;
+                        }}
                         onChangeText={(text: string) => {
                           handleInputChange(text, index);
                         }}
@@ -176,7 +216,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(0,50,0,0.4)",
     justifyContent: "center",
-    //paddingTop: 100,
     alignItems: "center",
   },
   modalContainer: {

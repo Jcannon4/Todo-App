@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 3,
     paddingTop: "8%",
-    width: "80%",
+    width: "90%",
     minWidth: 300,
   },
 });
