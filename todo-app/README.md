@@ -57,4 +57,4 @@ Export project for web (acts as a compiler)
 3. Run localized html code
    npx http-server dist
 4. Open web browser and connect to local host
-5. npx nativier "http://localhost:8080" --name "TodoList"
+5. npx nativefier "http://localhost:8080" --name "TodoList"
