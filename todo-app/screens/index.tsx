@@ -1,26 +1,28 @@
-import React from "react";
-import { StyleSheet, View, Pressable, Text, Image } from "react-native";
+import React from 'react';
+import { StyleSheet, View, Pressable, Text, Image } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   Easing,
-} from "react-native-reanimated";
-import AddButton from "../components/AddButton";
-import TaskModal from "../components/TaskModal";
-import { createListState } from "@/app/list/listSlice";
-import HomePageLists from "@/components/HomePageLists";
-import { createListItemProps } from "@/app/list/listItem";
-import settingsIcon from "../assets/images/settings.png";
+} from 'react-native-reanimated';
+import AddButton from '../components/AddButton';
+import TaskModal from '../components/TaskModal';
+import { createListState } from '@/app/list/listSlice';
+import HomePageLists from '@/components/HomePageLists';
+import { createListItemProps } from '@/app/list/listItem';
+import settingsIcon from '../assets/images/settings.png';
+import { apiLoadAllData } from '@/api/services';
 
 export default function Index() {
   const [isVisible, setVisibility] = React.useState<boolean>(false);
 
   const [optionState, setOptionState] = React.useState<boolean>(false);
   const toggleSettings = () => {
-    console.log(" Settings have been pressed!!!");
+    console.log(' Settings have been pressed!!!');
     setOptionState(!optionState);
   };
+
   const AnimatedImage = Animated.createAnimatedComponent(Image);
   const AnimatedText = Animated.createAnimatedComponent(Text);
   const animationProgress = useSharedValue(0);
@@ -62,7 +64,7 @@ export default function Index() {
             // We can just start the text animation directly after the image completes.
             textOpacity.value = withTiming(textTarget, { duration: 500 });
           }
-        },
+        }
       );
 
       // --- EXIT (optionState is false) ---
@@ -79,7 +81,7 @@ export default function Index() {
               easing: Easing.inOut(Easing.quad),
             });
           }
-        },
+        }
       );
     }
   }, [optionState]);
@@ -99,7 +101,7 @@ export default function Index() {
       <Pressable style={styles.settingsContainer} onPress={toggleSettings}>
         <AnimatedImage
           source={settingsIcon}
-          tintColor="white"
+          tintColor='white'
           style={[styles.settingsStyle, spinOutStyle]}
         ></AnimatedImage>
         <AnimatedText style={[styles.done, textAnimatedStyle]}>
@@ -107,9 +109,9 @@ export default function Index() {
         </AnimatedText>
       </Pressable>
       <TaskModal
-        title="Create new list"
-        placeholder="New List"
-        confirmTitle="Create"
+        title='Create new list'
+        placeholder='New List'
+        confirmTitle='Create'
         onSubmit={createListState}
         createPropObject={createListItemProps}
         isVisible={isVisible}
@@ -123,35 +125,35 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#494D5F",
+    backgroundColor: '#494D5F',
   },
   headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingTop: 20,
   },
   welcome: {
     fontSize: 24,
     flex: 1,
     // To logically center the text itself within the flexible space it occupies
-    textAlign: "center",
-    color: "white",
+    textAlign: 'center',
+    color: 'white',
   },
   settingsContainer: {
-    position: "absolute", // Makes the button float
+    position: 'absolute', // Makes the button float
     bottom: 20, // Position from the bottom
     left: 20,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   settingsStyle: {
-    position: "absolute",
+    position: 'absolute',
     width: 60,
     height: 60,
   },
   done: {
-    color: "white",
+    color: 'white',
     //position: "absolute", // Makes the button float
     fontSize: 22,
 
@@ -161,28 +163,28 @@ const styles = StyleSheet.create({
     borderBottomWidth: 20,
     borderLeftWidth: 20,
     borderRightWidth: 20,
-    borderBottomColor: "transparent",
-    borderLeftColor: "transparent",
-    borderRightColor: "transparent",
-    borderTopColor: "transparent",
+    borderBottomColor: 'transparent',
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderTopColor: 'transparent',
   },
   scrollContainer: {
     flex: 3,
-    paddingTop: "8%",
-    width: "80%",
+    paddingTop: '8%',
+    width: '80%',
     minWidth: 300,
   },
   floatingButton: {
-    position: "absolute", // Makes the button float
+    position: 'absolute', // Makes the button float
     bottom: 20, // Position from the bottom
     right: 20, // Position from the right
-    backgroundColor: "#007bff",
+    backgroundColor: '#007bff',
     borderRadius: 30,
     width: 60,
     height: 60,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     elevation: 8, // Android shadow
-    boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.3)", // widht height radius (color code , opacity)
+    boxShadow: '0px 4px 5px rgba(0, 0, 0, 0.3)', // widht height radius (color code , opacity)
   },
 });

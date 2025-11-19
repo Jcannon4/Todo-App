@@ -45,3 +45,8 @@ app-example
 
 #nativefier build tools
 /TodoList-darwin-x64
+
+# vscode settings
+.vscode/
+
+package-lock.json

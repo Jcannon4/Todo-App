@@ -1,7 +1,7 @@
 // src/app/store.ts
-import { configureStore } from "@reduxjs/toolkit";
-import listReducer from "../list/listSlice";
-import menuReducer from "../menu/menuSlice";
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import listReducer from '../list/listSlice';
+import menuReducer from '../menu/menuSlice';
 export const store = configureStore({
   reducer: {
     data: listReducer,
@@ -11,5 +11,12 @@ export const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
 
 export default store;
