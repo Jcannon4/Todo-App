@@ -1,7 +1,7 @@
 // src/app/store.ts
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import listReducer from '../list/listSlice';
-import menuReducer from '../menu/menuSlice';
+import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import listReducer from "../list/listSlice";
+import menuReducer from "../menu/menuSlice";
 export const store = configureStore({
   reducer: {
     data: listReducer,

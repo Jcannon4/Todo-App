@@ -87,19 +87,36 @@ const listSlice = createSlice({
     },
     reconcileListId: (
       state,
-      action: PayloadAction<{ tmpID: string; realID: string }>
+      action: PayloadAction<{
+        responses: { tempId: string; realId: number; order: number }[];
+      }>
     ) => {
-      const { tmpID, realID } = action.payload;
-      const existing = state.lists[tmpID];
-      if (!existing) return;
+      console.log('RECONCILIATION FUNCTION FIRING!');
+      for (const map of action.payload.responses) {
+        const { tempId, realId } = map;
 
-      // Move data to new record under real ID
-      state.lists[realID] = { ...existing, id: realID };
-      delete state.lists[tmpID];
+        // Convert realId to string for state consistency
+        const realIdStr = realId.toString();
 
-      // Fix order array
-      const idx = state.order.indexOf(tmpID);
-      if (idx !== -1) state.order[idx] = realID;
+        // Find the temporary list object
+        const existing = state.lists[tempId];
+        if (!existing) continue;
+
+        // 1. Create the new entry with the realId as the key
+        state.lists[realIdStr] = {
+          ...existing,
+          id: realIdStr, // <-- FIX: Use the actual realId (as a string)
+        };
+
+        // 2. Delete the old temporary entry
+        delete state.lists[tempId];
+
+        // 3. Fix the order array
+        const idx = state.order.indexOf(tempId);
+        if (idx !== -1) {
+          state.order[idx] = realIdStr; // <-- FIX: Use the string ID
+        }
+      }
     },
     addTodos: (
       state,
@@ -116,7 +133,7 @@ const listSlice = createSlice({
       todos.forEach((todo) => {
         if (!list.todo.items[todo.todoId]) {
           list.todo.items[todo.todoId] = todo;
-          list.todo.order.unshift(todo.todoId); // add to top (or bottom, depending)
+          list.todo.order.push(todo.todoId);
           if (!todo.isComplete) list.todo.incompleteCount++;
         }
       });

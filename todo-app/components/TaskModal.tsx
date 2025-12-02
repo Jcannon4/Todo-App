@@ -15,7 +15,7 @@ import {
 import RectangleButton from './RectangleButton';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/app/store/store';
-import { apiCreateList } from '../api/services';
+import { apiCreateList, apiCreateTodo } from '../api/services';
 import InputField from './InputField';
 import AddButton from './AddButton';
 import Animated, {
@@ -32,13 +32,15 @@ interface TaskModalProps<T> {
     todos?: T[];
   }) => UnknownAction;
   closeModal: (visible: boolean) => void;
+  reconciliateIDs: (payload: {
+    responses: { tempId: string; realId: number; order: number }[];
+  }) => UnknownAction;
   isVisible: boolean;
   isListMode: boolean; // true = List modal, false = Todo modal
   placeholder: string;
   title: string;
   confirmTitle: string;
   listID?: string;
-  apiCreateList?: (payload: { lists?: T[] }) => void;
 }
 
 export default function TaskModal<T>(props: TaskModalProps<T>) {
@@ -84,17 +86,26 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
     // Reset input fields after submission
     setInputs(['']);
     props.closeModal(false);
+    // #1 Create List of Objects with temporary uuids, agnostic for Lists & Todos
     const createdObjects = inputs
       .filter((i) => i.trim() !== '')
       .map((input) => props.createPropObject(input));
-    // Convert each user input string into a TodoItem object
+
+    // #2 Submit our user input of type TodoItemProps || ListItemProps to reducer
     if (props.isListMode) {
+      // ListItemProps
+      // #3 Update the reducer for instant UI feedback
       dispatch(props.onSubmit({ lists: createdObjects }));
-      console.log('Calling the api from task modal');
-      apiCreateList(createdObjects);
+      // #4 Send data to the Backend and await response
+      const backendResponse = await apiCreateList(createdObjects);
+      // #5 Use feedback from backend to update our front end UI
+      dispatch(props.reconciliateIDs({ responses: backendResponse }));
     } else {
+      //TodoListProps
       console.log('Dispatching todos');
+      // Update the reducer for instant UI feedback
       dispatch(props.onSubmit({ listId: props.listID, todos: createdObjects }));
+      const backendResponse = await apiCreateTodo(createdObjects, props.listID);
     }
     setIsUserEditing(false);
   };

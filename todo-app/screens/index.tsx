@@ -8,11 +8,11 @@ import Animated, {
 } from 'react-native-reanimated';
 import AddButton from '../components/AddButton';
 import TaskModal from '../components/TaskModal';
-import { createListState } from '@/app/list/listSlice';
+import { createListState, reconcileListId } from '@/app/list/listSlice';
 import HomePageLists from '@/components/HomePageLists';
 import { createListItemProps } from '@/app/list/listItem';
 import settingsIcon from '../assets/images/settings.png';
-import { apiLoadAllData } from '@/api/services';
+import { apiLoadLists, apiLoadTodos } from '@/api/services';
 
 export default function Index() {
   const [isVisible, setVisibility] = React.useState<boolean>(false);
@@ -85,6 +85,19 @@ export default function Index() {
       );
     }
   }, [optionState]);
+  React.useEffect(() => {
+    const loadData = async () => {
+      try {
+        const fetchedData = await apiLoadLists();
+        await apiLoadTodos();
+      } catch (e) {
+        console.error('Failed to fetch initial Data: ' + e);
+      } finally {
+        console.log('Dog Farts');
+      }
+    };
+    loadData();
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -114,6 +127,7 @@ export default function Index() {
         confirmTitle='Create'
         onSubmit={createListState}
         createPropObject={createListItemProps}
+        reconciliateIDs={reconcileListId}
         isVisible={isVisible}
         closeModal={setVisibility}
         isListMode={true}
