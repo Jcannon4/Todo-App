@@ -1,42 +1,42 @@
-import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { ListItemProps, reorderLists } from "@/app/list/listSlice";
-import ListItem from "@/app/list/listItem";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../app/store/store";
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { ListItemProps, reorderLists } from '@/app/list/listSlice';
+import ListItem from '@/app/list/listItem';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../app/store/store';
 import Animated, {
   LinearTransition,
   FadeInDown,
   FadeInUp,
   SlideOutLeft,
-} from "react-native-reanimated";
+} from 'react-native-reanimated';
 import DraggableFlatList, {
   RenderItemParams,
-} from "react-native-draggable-flatlist";
+} from 'react-native-draggable-flatlist';
 
 const HomePageLists = ({ ...props }) => {
   const dispatch = useDispatch();
   const listRecord: Record<string, ListItemProps> = useSelector(
-    (state: RootState) => state.data.lists,
+    (state: RootState) => state.data.lists
   );
   const listOrder: string[] = useSelector(
-    (state: RootState) => state.data.order,
+    (state: RootState) => state.data.order
   );
   const data = React.useMemo(
     () => listOrder.map((id) => listRecord[id]),
-    [listOrder, listRecord],
+    [listOrder, listRecord]
   );
 
   const handleReorder = React.useCallback(
     (newOrder: string[]) => {
       dispatch(reorderLists(newOrder));
     },
-    [dispatch],
+    [dispatch]
   );
   const handleDragEndMobile = React.useCallback(
     ({ data }: { data: ListItemProps[] }) =>
       handleReorder(data.map((item) => item.id)),
-    [handleReorder],
+    [handleReorder]
   );
 
   const renderItemDraggable = React.useCallback(
@@ -44,6 +44,7 @@ const HomePageLists = ({ ...props }) => {
       <View>
         <ListItem
           title={item.title}
+          _internal_uuid={item._internal_uuid}
           todo={item.todo}
           id={item.id}
           optionState={props.optionState}
@@ -51,7 +52,7 @@ const HomePageLists = ({ ...props }) => {
         />
       </View>
     ),
-    [props.optionState],
+    [props.optionState]
   );
   /* -------------------------
      No Data Display
@@ -66,7 +67,7 @@ const HomePageLists = ({ ...props }) => {
   /* -------------------------
      Mobile (ios/Android): DraggableFlatlist
      ------------------------- */
-  if (Platform.OS === "ios" || Platform.OS === "android") {
+  if (Platform.OS === 'ios' || Platform.OS === 'android') {
     return (
       <Animated.View
         onLayout={() => LinearTransition.delay(100)}
@@ -75,7 +76,7 @@ const HomePageLists = ({ ...props }) => {
         <DraggableFlatList
           data={data}
           ListFooterComponent={<View style={styles.footer} />}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._internal_uuid}
           onDragEnd={handleDragEndMobile}
           renderItem={renderItemDraggable}
           showsVerticalScrollIndicator={false}
@@ -94,7 +95,7 @@ const HomePageLists = ({ ...props }) => {
   /* -------------------------
      WEB (Desktop): ScrollView
      ------------------------- */
-  if (Platform.OS === "web") {
+  if (Platform.OS === 'web') {
     return (
       <ScrollView
         style={styles.scrollContainer}
@@ -103,7 +104,7 @@ const HomePageLists = ({ ...props }) => {
       >
         {Object.values(listRecord).map((list) => (
           <Animated.View
-            key={list.id}
+            key={list._internal_uuid}
             style={{ marginTop: 10 }}
             layout={LinearTransition.delay(500)}
             entering={FadeInDown.duration(200)}
@@ -112,6 +113,7 @@ const HomePageLists = ({ ...props }) => {
             <ListItem
               title={list.title}
               todo={list.todo}
+              _internal_uuid={list._internal_uuid}
               id={list.id}
               optionState={props.optionState}
             ></ListItem>
@@ -126,18 +128,18 @@ const HomePageLists = ({ ...props }) => {
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 3,
-    paddingTop: "8%",
-    width: "95%",
+    paddingTop: '8%',
+    width: '95%',
     minWidth: 300,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   itemContainer: {
     marginVertical: 6,
   },
   instruction: {
-    color: "white",
+    color: 'white',
     fontSize: 16,
-    textAlign: "center",
+    textAlign: 'center',
     paddingTop: 100,
   },
   // Allows user to scroll past the end to see last item clearly

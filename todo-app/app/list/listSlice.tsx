@@ -1,8 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { sortTodoOrder } from '../utils';
+import { apiFetchAllData } from '@/api/services';
+import { v6 as uuidv6 } from 'uuid';
 export interface TodoItemProps {
   todoId: string;
   msg: string;
+  _internal_uuid: string;
   isComplete: boolean;
 }
 export interface TodoState {
@@ -13,17 +16,28 @@ export interface TodoState {
 export interface ListItemProps {
   title: string;
   id: string;
+  _internal_uuid: string;
   todo: TodoState;
 }
 export interface ListState {
   lists: Record<string, ListItemProps>; // map for O(1) access
   order: string[];
+  loading: 'idle' | 'pending' | 'succeeded' | 'failed';
+  error: string | null;
 }
 
 const initialState: ListState = {
   lists: {},
   order: [],
+  loading: 'idle',
+  error: null,
 };
+
+export const fetchAllData = createAsyncThunk('data/all', async () => {
+  // This will return { lists, todos }
+  const response = await apiFetchAllData();
+  return response;
+});
 
 const listSlice = createSlice({
   name: 'list',
@@ -42,33 +56,7 @@ const listSlice = createSlice({
         state.order.push(newList.id);
       });
     },
-    loadInitialState: (state, action) => {
-      const { lists, todos } = action.payload;
-      lists.forEach((list: ListItemProps) => {
-        state.lists[list.id] = {
-          ...list,
-          todo: {
-            items: {},
-            order: [],
-            incompleteCount: 0,
-          },
-        };
-        state.order.push(list.id);
-      });
 
-      todos.forEach((todo: TodoItemProps) => {
-        const list = state.lists[todo.todoId];
-        if (!list) return;
-
-        list.todo.items[todo.todoId] = {
-          todoId: todo.todoId,
-          msg: todo.msg,
-          isComplete: todo.isComplete,
-        };
-
-        list.todo.order.push(todo.todoId);
-      });
-    },
     reorderLists: (state, action) => {
       state.order = action.payload; // just pass reordered ids
     },
@@ -141,7 +129,45 @@ const listSlice = createSlice({
       // Apply sorting rule after adding
       list.todo.order = sortTodoOrder(list.todo.items, list.todo.order);
     },
+    reconcileTodoId: (
+      state,
+      action: PayloadAction<{
+        responses: {
+          tempId: string;
+          realId: number;
+          order: number;
+          parentID: number;
+        }[];
+      }>
+    ) => {
+      for (const map of action.payload.responses) {
+        const { tempId, realId, parentID } = map;
+        const realIdStr = realId.toString();
+        const list = state.lists[parentID];
 
+        if (!list) continue; // Safety check
+
+        // 1. Find the temporary todo object
+        const existingTodo = list.todo.items[tempId];
+        if (!existingTodo) continue;
+
+        // 2. Create the new entry with the realId as the key
+        // This preserves the stable _internal_uuid!
+        list.todo.items[realIdStr] = {
+          ...existingTodo,
+          todoId: realIdStr, // Update the data ID
+        };
+
+        // 3. Delete the old temporary entry
+        delete list.todo.items[tempId];
+
+        // 4. Fix the order array
+        const idx = list.todo.order.indexOf(tempId);
+        if (idx !== -1) {
+          list.todo.order[idx] = realIdStr; // Replace tempId with realId
+        }
+      }
+    },
     toggleTodo: (
       state,
       action: PayloadAction<{ listId: string; todoId: string }>
@@ -191,6 +217,69 @@ const listSlice = createSlice({
       list.todo.order = list.todo.order.filter((id) => id !== todoId);
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchAllData.pending, (state) => {
+        state.loading = 'pending';
+        state.error = null;
+      })
+      .addCase(fetchAllData.rejected, (state, action) => {
+        state.loading = 'failed';
+        state.error = action.error.message || 'Failed to fetch Data.';
+      })
+      .addCase(fetchAllData.fulfilled, (state, action) => {
+        const { lists, todos } = action.payload;
+
+        // Reset state
+        state.lists = {};
+        state.order = [];
+
+        // 1. Process and load lists
+        lists.forEach((list: any) => {
+          const listIdStr = list.list_id.toString();
+          state.lists[listIdStr] = {
+            id: listIdStr,
+            title: list.title,
+            _internal_uuid: uuidv6(), // Generate stable key
+            todo: {
+              items: {},
+              order: [],
+              incompleteCount: 0,
+            },
+          };
+          state.order.push(listIdStr);
+        });
+
+        // 2. Process and load todos
+        todos.forEach((todo: any) => {
+          const listIdStr = todo.list_id.toString();
+          const todoIdStr = todo.todo_id.toString();
+
+          // Find the parent list
+          const parentList = state.lists[listIdStr];
+          if (!parentList) {
+            console.warn(`Todo ${todo.todo_id} has no parent list!`);
+            return;
+          }
+          // Add todo to its parent
+          parentList.todo.items[todoIdStr] = {
+            todoId: todoIdStr,
+            msg: todo.msg,
+            isComplete: !!todo.isComplete, // Convert 0/1 to boolean
+            _internal_uuid: uuidv6(), // Generate stable key
+          };
+          parentList.todo.order.push(todoIdStr);
+
+          // Update incomplete count
+          if (!todo.isComplete) {
+            parentList.todo.incompleteCount++;
+          }
+        });
+
+        state.loading = 'succeeded';
+        state.error = null;
+      });
+  },
 });
 export const {
   createListState,
@@ -198,7 +287,7 @@ export const {
   reorderLists,
   editListName,
   reconcileListId,
-  loadInitialState,
+  reconcileTodoId,
   addTodos,
   deleteTodo,
   toggleTodo,

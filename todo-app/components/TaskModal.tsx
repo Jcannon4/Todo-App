@@ -33,7 +33,12 @@ interface TaskModalProps<T> {
   }) => UnknownAction;
   closeModal: (visible: boolean) => void;
   reconciliateIDs: (payload: {
-    responses: { tempId: string; realId: number; order: number }[];
+    responses: {
+      tempId: string;
+      realId: number;
+      order: number;
+      parentID?: number | null;
+    }[];
   }) => UnknownAction;
   isVisible: boolean;
   isListMode: boolean; // true = List modal, false = Todo modal
@@ -106,6 +111,7 @@ export default function TaskModal<T>(props: TaskModalProps<T>) {
       // Update the reducer for instant UI feedback
       dispatch(props.onSubmit({ listId: props.listID, todos: createdObjects }));
       const backendResponse = await apiCreateTodo(createdObjects, props.listID);
+      dispatch(props.reconciliateIDs({ responses: backendResponse }));
     }
     setIsUserEditing(false);
   };

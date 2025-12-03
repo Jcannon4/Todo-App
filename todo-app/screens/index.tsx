@@ -12,7 +12,9 @@ import { createListState, reconcileListId } from '@/app/list/listSlice';
 import HomePageLists from '@/components/HomePageLists';
 import { createListItemProps } from '@/app/list/listItem';
 import settingsIcon from '../assets/images/settings.png';
-import { apiLoadLists, apiLoadTodos } from '@/api/services';
+import { fetchAllData } from '../app/list/listSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/app/store/store';
 
 export default function Index() {
   const [isVisible, setVisibility] = React.useState<boolean>(false);
@@ -44,6 +46,8 @@ export default function Index() {
       opacity: textOpacity.value,
     };
   });
+  // Animation for the option icon and 'Done' text
+  // Renders when optionState is
   React.useEffect(() => {
     // Define the target values based on the state
     const imageTarget = optionState ? 1 : 0; // 1 for fully animated, 0 for initial
@@ -85,19 +89,10 @@ export default function Index() {
       );
     }
   }, [optionState]);
+  const dispatch = useDispatch<AppDispatch>();
   React.useEffect(() => {
-    const loadData = async () => {
-      try {
-        const fetchedData = await apiLoadLists();
-        await apiLoadTodos();
-      } catch (e) {
-        console.error('Failed to fetch initial Data: ' + e);
-      } finally {
-        console.log('Dog Farts');
-      }
-    };
-    loadData();
-  }, []);
+    dispatch(fetchAllData());
+  }, [dispatch]);
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>

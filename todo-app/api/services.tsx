@@ -6,9 +6,7 @@ import {
   ListItemProps,
   reconcileListId,
   TodoItemProps,
-  loadInitialState,
 } from '../app/list/listSlice';
-import ListItem, { createListItemProps } from '../app/list/listItem';
 import { DEV_IP_ADDRESS } from '@env';
 
 // Change 'null' variable to the production endpoint
@@ -100,35 +98,43 @@ export async function apiCreateList(lists: ListItemProps[]) {
 // TODO: Can we refactor code from this method and apiCreateList
 export const apiCreateTodo = async (todos: TodoItemProps[], listID: number) => {
   const url = `${BASE_URL}/todos`;
-  todos.map(async (entry) => {
-    try {
-      const payload = {
-        list_id: listID, //TODO change to dynamic data not a static variable
-        msg: entry.msg,
-      };
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // Convert the JavaScript object (payload) into a JSON string
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) {
-        // Throw an error with the status for better debugging
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      // Parse the JSON response body into a List object and return it
-      const data = await response.json();
-      console.log('Posted Todo response data: ', data);
-      return data;
-    } catch (error) {
-      console.error('Error creating list:', error);
-      // Re-throw the error so the calling component can handle it
-      throw error;
-    }
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ todos, listID }), // Pass our array of todos to add and the parent ID
   });
+
+  return response.json(); // Must return array of mappings
+
+  // todos.map(async (entry) => {
+  //   try {
+  //     const payload = {
+  //       list_id: listID, //TODO change to dynamic data not a static variable
+  //       msg: entry.msg,
+  //     };
+  //     const response = await fetch(url, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       // Convert the JavaScript object (payload) into a JSON string
+  //       body: JSON.stringify(payload),
+  //     });
+  //     if (!response.ok) {
+  //       // Throw an error with the status for better debugging
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     }
+
+  //     // Parse the JSON response body into a List object and return it
+  //     const data = await response.json();
+
+  //     return data;
+  //   } catch (error) {
+  //     console.error('Error creating list:', error);
+  //     // Re-throw the error so the calling component can handle it
+  //     throw error;
+  //   }
+  // });
 };
 
 export const apiLoadLists = async () => {
@@ -137,6 +143,10 @@ export const apiLoadLists = async () => {
 
 export const apiLoadTodos = async () => {
   return apiRequest('todos', 'GET');
+};
+
+export const apiFetchAllData = async () => {
+  return apiRequest('data/all', 'GET');
 };
 
 export const deleteTodo = async (id: number) => {};
