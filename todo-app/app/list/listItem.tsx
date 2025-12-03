@@ -9,6 +9,7 @@ import { ListItemProps, deleteList, editListName } from './listSlice';
 import React, { JSX, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
+import { apiDeleteList } from '@/api/services';
 
 // Creates List objects for us to store into the state
 // returns to the task modal before being shipped to the reducer
@@ -59,6 +60,7 @@ const ListItem = ({
   };
   const onDelete = () => {
     dispatch(deleteList({ listID: id }));
+    apiDeleteList(id);
   };
 
   return (

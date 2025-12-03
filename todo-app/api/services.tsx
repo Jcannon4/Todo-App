@@ -66,12 +66,6 @@ const apiRequest = async (endPoint: string, reqType: string) => {
   }
 };
 
-interface ListMapping {
-  tempId: string;
-  realId: number;
-  order: number;
-}
-
 /**
  * Sends a POST request to the backend to create a new list.
  * @param {ListItemProps[]} lists - The array of Lists to be created on the backed
@@ -105,36 +99,6 @@ export const apiCreateTodo = async (todos: TodoItemProps[], listID: number) => {
   });
 
   return response.json(); // Must return array of mappings
-
-  // todos.map(async (entry) => {
-  //   try {
-  //     const payload = {
-  //       list_id: listID, //TODO change to dynamic data not a static variable
-  //       msg: entry.msg,
-  //     };
-  //     const response = await fetch(url, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       // Convert the JavaScript object (payload) into a JSON string
-  //       body: JSON.stringify(payload),
-  //     });
-  //     if (!response.ok) {
-  //       // Throw an error with the status for better debugging
-  //       throw new Error(`HTTP error! Status: ${response.status}`);
-  //     }
-
-  //     // Parse the JSON response body into a List object and return it
-  //     const data = await response.json();
-
-  //     return data;
-  //   } catch (error) {
-  //     console.error('Error creating list:', error);
-  //     // Re-throw the error so the calling component can handle it
-  //     throw error;
-  //   }
-  // });
 };
 
 export const apiLoadLists = async () => {
@@ -149,4 +113,10 @@ export const apiFetchAllData = async () => {
   return apiRequest('data/all', 'GET');
 };
 
-export const deleteTodo = async (id: number) => {};
+export const apiDeleteTodo = async (id: string) => {
+  return apiRequest(`todos/${id}`, 'DELETE');
+};
+
+export const apiDeleteList = async (id: string) => {
+  return apiRequest(`lists/${id}`, 'DELETE');
+};

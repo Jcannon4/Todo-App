@@ -16,6 +16,7 @@ import { AppDispatch, RootState } from '../store/store';
 import { useRef, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { TodoItemProps } from '../list/listSlice';
+import { apiDeleteTodo } from '@/api/services';
 
 export function createTodoItemProps(text: string): TodoItemProps {
   const todoData: TodoItemProps = {
@@ -123,6 +124,7 @@ const TodoItem = ({
       () => dispatch(deleteTodo({ listId: listID, todoId: currentTodoId })),
       200
     );
+    apiDeleteTodo(currentTodoId);
   };
 
   return (
