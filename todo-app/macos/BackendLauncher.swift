@@ -12,7 +12,7 @@ class BackendLauncher: NSObject {
   func startServer() -> Void {
     // 1. Get the path to the executable bundled in the app's Resources folder
     // Your 'todo-backend' file should be placed inside the macOS app's Resources
-    guard let executablePath = Bundle.main.path(forResource: "backend/todo-backend", ofType: nil) else {
+    guard let executablePath = Bundle.main.path(forResource: "todo-backend", ofType: nil) else {
         print("Error: todo-backend executable not found in bundle.")
         return
     }

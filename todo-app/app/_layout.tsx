@@ -12,9 +12,9 @@ export default function RootLayout() {
   const navigation = useNavigation();
   // Entry point for application. Launch our backend services
   useEffect(() => {
-    BackendLauncher.StartServer();
+    BackendLauncher.startServer();
     return () => {
-      BackendLauncher.StopServer();
+      BackendLauncher.stopServer();
     };
   }, []); //empty dependency array ensures single render during lifecycle
   useLayoutEffect(() => {
