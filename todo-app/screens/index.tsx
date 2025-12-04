@@ -1,20 +1,20 @@
+import { createListItemProps } from '@/app/list/listItem';
+import { createListState, reconcileListId } from '@/app/list/listSlice';
+import { AppDispatch } from '@/app/store/store';
+import HomePageLists from '@/components/HomePageLists';
 import React from 'react';
-import { StyleSheet, View, Pressable, Text, Image } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
   Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
+import { useDispatch } from 'react-redux';
+import { fetchAllData } from '../app/list/listSlice';
+import settingsIcon from '../assets/images/settings.png';
 import AddButton from '../components/AddButton';
 import TaskModal from '../components/TaskModal';
-import { createListState, reconcileListId } from '@/app/list/listSlice';
-import HomePageLists from '@/components/HomePageLists';
-import { createListItemProps } from '@/app/list/listItem';
-import settingsIcon from '../assets/images/settings.png';
-import { fetchAllData } from '../app/list/listSlice';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/app/store/store';
 
 export default function Index() {
   const [isVisible, setVisibility] = React.useState<boolean>(false);
@@ -90,6 +90,7 @@ export default function Index() {
     }
   }, [optionState]);
   const dispatch = useDispatch<AppDispatch>();
+  // Application Loading point
   React.useEffect(() => {
     dispatch(fetchAllData());
   }, [dispatch]);

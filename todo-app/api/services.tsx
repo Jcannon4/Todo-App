@@ -4,7 +4,7 @@ import { ListItemProps, TodoItemProps } from '../app/list/listSlice';
 // Bring in our IP at runtime and give it a type
 
 // Change 'null' variable to the production endpoint
-const backendIP = __DEV__ ? `0` : null;
+const backendIP = __DEV__ ? `0` : 'localhost';
 if (__DEV__) {
   console.log(
     'Application Running in Development environment. Current IP is: ' +

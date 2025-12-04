@@ -1,17 +1,22 @@
-import { Stack } from "expo-router";
-import React, { useLayoutEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { store } from "./store/store";
-import { Provider } from "react-redux";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import "react-native-get-random-values";
-import { apiLoadLists } from "../api/services";
+import { useNavigation } from '@react-navigation/native';
+import { Stack } from 'expo-router';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { NativeModules } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-get-random-values';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
+const { BackendLauncher } = NativeModules;
 
 export default function RootLayout() {
   const navigation = useNavigation();
-  // Entrance to get lists from backend
-  // const data = apiLoadLists();
-  // console.log('List Data' + data);
+  // Entry point for application. Launch our backend services
+  useEffect(() => {
+    BackendLauncher.StartServer();
+    return () => {
+      BackendLauncher.StopServer();
+    };
+  }, []); //empty dependency array ensures single render during lifecycle
   useLayoutEffect(() => {
     navigation.setOptions({});
   }, [navigation]);
@@ -20,23 +25,23 @@ export default function RootLayout() {
       <Provider store={store}>
         <Stack
           screenOptions={{
-            headerStyle: { backgroundColor: "#6a51ae" },
-            headerTintColor: "#fff",
-            headerTitleStyle: { fontWeight: "bold" },
-            headerTitleAlign: "center",
+            headerStyle: { backgroundColor: '#6a51ae' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontWeight: 'bold' },
+            headerTitleAlign: 'center',
           }}
         >
           <Stack.Screen
-            name="index"
+            name='index'
             options={{
-              title: "Home",
+              title: 'Home',
             }}
           />
 
           <Stack.Screen
-            name="todoList"
+            name='todoList'
             options={({ route }) => ({
-              title: (route.params as { title: string })?.title || "Todo List",
+              title: (route.params as { title: string })?.title || 'Todo List',
               // ... other options
             })}
           />
