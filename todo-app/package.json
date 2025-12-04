@@ -37,7 +37,6 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.4",
-    "react-native-dotenv": "^3.4.11",
     "react-native-draggable-flatlist": "^4.0.3",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-get-random-values": "^1.11.0",
@@ -56,6 +55,10 @@
     "eslint-config-expo": "~10.0.0",
     "prettier": "3.6.2",
     "typescript": "~5.9.2"
+  },
+  "overrides": {
+    "glob": "^10.0.0",
+    "rimraf": "^5.0.0"
   },
   "private": true
 }

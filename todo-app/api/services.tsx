@@ -1,16 +1,10 @@
-// import { BASE_URL } from '../../.env.local';
-
 import { Alert } from 'react-native';
-import {
-  createListState,
-  ListItemProps,
-  reconcileListId,
-  TodoItemProps,
-} from '../app/list/listSlice';
-import { DEV_IP_ADDRESS } from '@env';
+import { ListItemProps, TodoItemProps } from '../app/list/listSlice';
+
+// Bring in our IP at runtime and give it a type
 
 // Change 'null' variable to the production endpoint
-const backendIP = __DEV__ ? `${DEV_IP_ADDRESS}` : null;
+const backendIP = __DEV__ ? `0` : null;
 if (__DEV__) {
   console.log(
     'Application Running in Development environment. Current IP is: ' +

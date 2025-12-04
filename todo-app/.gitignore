@@ -49,4 +49,8 @@ app-example
 # vscode settings
 .vscode/
 
+#config file for IP address 
+app.config.local.js
+
+
 package-lock.json
