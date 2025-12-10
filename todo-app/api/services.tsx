@@ -4,7 +4,7 @@ import { ListItemProps, TodoItemProps } from '../app/list/listSlice';
 // Bring in our IP at runtime and give it a type
 
 // Change 'null' variable to the production endpoint
-const backendIP = __DEV__ ? `0` : 'localhost';
+const backendIP = __DEV__ ? `localhost` : 'localhost';
 if (__DEV__) {
   console.log(
     'Application Running in Development environment. Current IP is: ' +
@@ -114,3 +114,32 @@ export const apiDeleteTodo = async (id: string) => {
 export const apiDeleteList = async (id: string) => {
   return apiRequest(`lists/${id}`, 'DELETE');
 };
+
+export async function apiEditListName(id: string, title: string) {
+  const url = BASE_URL + `/lists/${id}`;
+  console.log('URL UPDATE: ' + url);
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title }),
+  });
+
+  return response.json(); // Must return array of mappings
+}
+
+export async function apiToggleTodo(id: string, isComplete: boolean) {
+  const url = BASE_URL + `/todos/${id}`;
+  console.log('URL UPDATE: ' + url);
+  let boolValue = 0; // default to 0 "FALSE"
+  if (!isComplete) {
+    // Toggle 0 to 1
+    boolValue = 1;
+  }
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ boolValue }),
+  });
+
+  return response.json();
+}

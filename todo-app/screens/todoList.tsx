@@ -3,13 +3,13 @@ import { StyleSheet, View } from 'react-native';
 import AddButton from '../components/AddButton';
 import TaskModal from '../components/TaskModal';
 
-import TodoPageList from '@/components/TodoPageList';
 import { addTodos, reconcileTodoId } from '@/app/list/listSlice';
 import { createTodoItemProps } from '@/app/todo/todoItem';
+import TodoPageList from '@/components/TodoPageList';
 
+import { RootState } from '@/app/store/store';
 import { useLocalSearchParams } from 'expo-router';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/app/store/store';
 
 export default function TodoList() {
   // Array of tofo items from the redux store
@@ -23,7 +23,7 @@ export default function TodoList() {
   const todoOrder = useSelector(
     (state: RootState) => state.data.lists[id].todo.order
   );
-  console.log('ANNOUNCING listID at the todo list page: ' + listID);
+  console.log('ANNOUNCING listID at render of todo list page: ' + listID);
 
   return (
     <View style={styles.container}>

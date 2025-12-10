@@ -1,3 +1,6 @@
+import { apiDeleteTodo, apiToggleTodo } from '@/api/services';
+import { useLocalSearchParams } from 'expo-router';
+import { useRef, useState } from 'react';
 import {
   Animated,
   Easing,
@@ -6,17 +9,13 @@ import {
   Text,
   View,
 } from 'react-native';
-import { v6 as uuidv6 } from 'uuid';
-import trash from '../../assets/images/delete.png';
-import circle from '../../assets/images/circle.png';
-import check from '../../assets/images/check.png';
-import { deleteTodo, toggleTodo } from '../list/listSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { v6 as uuidv6 } from 'uuid';
+import check from '../../assets/images/check.png';
+import circle from '../../assets/images/circle.png';
+import trash from '../../assets/images/delete.png';
+import { deleteTodo, TodoItemProps, toggleTodo } from '../list/listSlice';
 import { AppDispatch, RootState } from '../store/store';
-import { useRef, useState } from 'react';
-import { useLocalSearchParams } from 'expo-router';
-import { TodoItemProps } from '../list/listSlice';
-import { apiDeleteTodo } from '@/api/services';
 
 export function createTodoItemProps(text: string): TodoItemProps {
   const todoData: TodoItemProps = {
@@ -112,9 +111,12 @@ const TodoItem = ({
     ]).start();
   };
 
-  const toggleCompletion = (currentTodoId: string) => {
-    console.log('Toggle Completion of item with id:\n' + id);
+  const toggleCompletion = (currentTodoId: string, isComplete: boolean) => {
+    console.log('Toggle Completion of item with listid:\n' + id);
     dispatch(toggleTodo({ listId: listID, todoId: currentTodoId }));
+    const response = apiToggleTodo(currentTodoId, isComplete);
+    console.log('Response of Toggl from api: ' + response);
+
     checkmarkAnimation();
   };
 
@@ -137,7 +139,7 @@ const TodoItem = ({
       ]}
     >
       <Pressable
-        onPress={() => toggleCompletion(todoId)}
+        onPress={() => toggleCompletion(todoId, isComplete)}
         style={styles.buttonContainer}
       >
         <Animated.Image

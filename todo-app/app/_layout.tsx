@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { Stack } from 'expo-router';
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { NativeModules } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-get-random-values';
@@ -11,12 +11,12 @@ const { BackendLauncher } = NativeModules;
 export default function RootLayout() {
   const navigation = useNavigation();
   // Entry point for application. Launch our backend services
-  useEffect(() => {
-    BackendLauncher.startServer();
-    return () => {
-      BackendLauncher.stopServer();
-    };
-  }, []); //empty dependency array ensures single render during lifecycle
+  // useEffect(() => {
+  //   BackendLauncher.startServer();
+  //   return () => {
+  //     BackendLauncher.stopServer();
+  //   };
+  // }, []); //empty dependency array ensures single render during lifecycle
   useLayoutEffect(() => {
     navigation.setOptions({});
   }, [navigation]);

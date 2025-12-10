@@ -1,15 +1,15 @@
-import { v6 as uuidv6 } from 'uuid';
-import { StyleSheet, Pressable, TextInput, Keyboard } from 'react-native';
-import Animated, { LinearTransition, FadeIn } from 'react-native-reanimated';
-import { Link } from 'expo-router';
+import { apiDeleteList, apiEditListName } from '@/api/services';
 import { AntDesign } from '@expo/vector-icons';
-import edit from '../../assets/images/edit.png';
-import trash from '../../assets/images/delete.png';
-import { ListItemProps, deleteList, editListName } from './listSlice';
+import { Link } from 'expo-router';
 import React, { JSX, useEffect } from 'react';
+import { Keyboard, Pressable, StyleSheet, TextInput } from 'react-native';
+import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 import { useDispatch } from 'react-redux';
+import { v6 as uuidv6 } from 'uuid';
+import trash from '../../assets/images/delete.png';
+import edit from '../../assets/images/edit.png';
 import { AppDispatch } from '../store/store';
-import { apiDeleteList } from '@/api/services';
+import { ListItemProps, deleteList, editListName } from './listSlice';
 
 // Creates List objects for us to store into the state
 // returns to the task modal before being shipped to the reducer
@@ -56,6 +56,7 @@ const ListItem = ({
   const closeEditor = () => {
     setIsEditing(false);
     dispatch(editListName({ newName: titleValue, listID: id }));
+    apiEditListName(id, titleValue);
     Keyboard.dismiss();
   };
   const onDelete = () => {
